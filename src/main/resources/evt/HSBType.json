@@ -1,0 +1,14 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"type":"object",
+	"title": "HSBTypeSchema",
+	"description":"Item carrying a percentage value for dimmers",
+	"properties": {
+		"HSBType": {
+			"description": "String value consist of three comma-separated value for hue, saturaton and value",
+			"type": "string",
+            "pattern": "[0-9]{1,3},[0-9]{1,3},[0-9]{1,3}"
+		}
+	},
+	"required": ["HSBType"]
+}

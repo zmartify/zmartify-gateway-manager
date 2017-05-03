@@ -1,0 +1,26 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"type":"object",
+	"title": "RollerShutterSchema",
+	"description":"Typically used for blinds",
+	"properties": {
+        "UpDownType": {
+            "description": "Up or down",
+            "type": "string",
+            "pattern": "UP|DOWN"
+        },
+        "StopMoveType": {
+            "description": "Stop or move",
+            "type": "string",
+            "pattern": "STOP|MOVE"
+        },
+        "PercentType": {
+            "description": "Percent Up or down",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+        }
+    },
+	"required": ["PercentType","UpDownType","StopMoveType"]
+}
+	

@@ -1,0 +1,13 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"type":"object",
+	"title": "DateTimeSchema",
+	"description":"Stores data and time",
+	"properties": {
+		"DateTimeType": {
+			"description": "Date and Time",
+			"type": "string"
+	   }
+	},
+	"required": ["DateTimeType"]
+}

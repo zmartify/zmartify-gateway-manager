@@ -1,0 +1,15 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"type":"object",
+	"title": "SwitchSchema",
+	"description":"Typically used for ligths (on/off)",
+	"properties": {
+		"OnOffType": {
+			"description": "On/Off",
+			"type": "string",
+			"pattern": "ON|OFF"
+		}
+	},
+	"required": ["OnOffType"]
+}
+	

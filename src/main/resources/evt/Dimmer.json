@@ -1,0 +1,15 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"type":"object",
+	"title": "DimmerSchema",
+	"description":"Item carrying a percentage value for dimmers",
+	"properties": {
+		"PercentType": {
+			"description": "Dimmer value",
+			"type": "number",
+			"minimum": 0,
+			"maximum": 100
+		}
+	},
+	"required": ["PercentType"]
+}

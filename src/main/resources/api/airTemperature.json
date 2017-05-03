@@ -1,0 +1,49 @@
+
+{
+	"type": "object",
+	"properties": {
+		"eventCount": {
+			"type": "number",
+			"default": -1
+		},
+		"realEventCount": {
+			"type": "number"
+		},
+		"airTemperature": {
+			"properties": {
+				"C": {
+					"type": "number",
+					"default": 0
+				},
+				"F": {
+					"type": "number",
+					"default": 0
+				},
+                "isLow": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "isHigh": {
+                    "type": "boolean",
+                    "default": false
+                },
+				"lowest": {
+					"type": "number",
+					"default": 100
+				},
+				"highest": {
+					"type": "number",
+					"default": 0
+				}
+			},
+			"required": [
+				"C",
+				"F",
+				"isLow",
+				"isHigh",
+				"lowest",
+				"highest"
+			]
+		}
+	}
+}
