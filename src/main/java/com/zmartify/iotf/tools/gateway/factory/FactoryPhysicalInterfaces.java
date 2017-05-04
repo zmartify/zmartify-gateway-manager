@@ -1,8 +1,10 @@
-package com.zmartify.iotf.tools.gateway;
+package com.zmartify.iotf.tools.gateway.factory;
 
 import com.google.gson.JsonArray;
 import com.ibm.iotf.client.IoTFCReSTException;
 import com.zmartify.iotf.tools.api.ZmartifyAPIClient;
+import com.zmartify.iotf.tools.gateway.ZmartifyDeviceType;
+import static com.zmartify.iotf.tools.gateway.WCConstants.*;
 
 public class FactoryPhysicalInterfaces {
 
@@ -25,7 +27,6 @@ public class FactoryPhysicalInterfaces {
 		if (!apiClient.isPhysicalInterfaceExistByName(name)) {
 			return apiClient.addPhysicalInterface(name, description).get("id").getAsString();
 		} else {
-			System.out.println("Physical Interface already exists" + name);
 			JsonArray resultArray = apiClient.getPhysicalInterfaceByName(name).get("results").getAsJsonArray();
 			if (resultArray.size() > 0 ) {
 				// Return first object
@@ -54,10 +55,10 @@ public class FactoryPhysicalInterfaces {
 	public void createPhysicalInterfaces() {
 		for (ZmartifyDeviceType zmDT : ZmartifyDeviceType.values()) {
 			try {
-				createPhysicalInterface("state",zmDT.getEventType() , zmDT.getDeviceType(), zmDT.getPhysicalInterfaceName(), zmDT.getDescription());
+				createPhysicalInterface(EVENTID,zmDT.getEventType() , zmDT.getDeviceType(), zmDT.getPhysicalInterfaceName(), zmDT.getDescription());
 				System.out.println("Created physical interface: " + zmDT.getPhysicalInterfaceName());
 			} catch (IoTFCReSTException e) {
-				System.out.println("ERROR: Trying to create Physical Interface " + zmDT.getPhysicalInterfaceName() + " ::" + e.getMessage());
+				System.out.println("ERROR: Trying to create Physical Interface: " + zmDT.getPhysicalInterfaceName() + " ::" + e.getMessage());
 				e.printStackTrace();
 			}
 		}

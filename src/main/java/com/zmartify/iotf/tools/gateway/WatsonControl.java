@@ -15,6 +15,7 @@
 package com.zmartify.iotf.tools.gateway;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,6 +28,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FilenameUtils;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.ibm.iotf.client.IoTFCReSTException;
@@ -34,6 +37,10 @@ import com.ibm.iotf.devicemgmt.DeviceData;
 import com.ibm.iotf.devicemgmt.DeviceInfo;
 import com.ibm.iotf.devicemgmt.gateway.ManagedGateway;
 import com.zmartify.iotf.tools.api.ZmartifyAPIClient;
+import com.zmartify.iotf.tools.gateway.factory.FactoryApplicationInterfaces;
+import com.zmartify.iotf.tools.gateway.factory.FactoryDeviceTypes;
+import com.zmartify.iotf.tools.gateway.factory.FactoryEventTypes;
+import com.zmartify.iotf.tools.gateway.factory.FactoryPhysicalInterfaces;
 
 /**
  * Gateways are a specialized class of devices in Watson IoT Platform which serve as access points 
@@ -179,13 +186,37 @@ public class WatsonControl {
 		}
 	}
 
+	private void writeJsonFile(String fileName, JsonObject json) {
+		FileWriter writer;
+		try {
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			writer = new FileWriter(fileName);
+			writer.write(gson.toJson(json));
+			writer.close();
+		} catch (IOException e) {
+			System.out.println("Error writing file");
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void writeResourceFile(String fileName, JsonObject json, String resourceType) {
+		writeJsonFile(WatsonControl.class.getResource("/" + resourceType + "/").getPath() + fileName + ".json", json);
+	}
+	
 	private void disconnect() {
 		// Disconnect cleanly
 		mgdGateway.disconnect();
 	}
 
 	public JsonObject addSchema(String schemaName, String schemaType, String description) throws IoTFCReSTException {
-		return apiClient.addSchema(schemaType + "/"+ schemaName, WatsonControl.class.getResource("/" + schemaType + "/" + schemaName +".json").getPath(), description);
+		String name = schemaType + "/" + schemaName;
+		String schemaFileName = WatsonControl.class.getResource("/" + schemaType + "/" + schemaName +".json").getPath();
+		if (!apiClient.isSchemaExistByName(name)) {
+			return apiClient.updateSchemaByName(name, schemaFileName);
+		} else {
+			return apiClient.addSchema(schemaType + "/"+ schemaName, schemaFileName, description);
+		}
 	}
 
 	public class MyFileFilter implements FilenameFilter {
@@ -211,31 +242,6 @@ public class WatsonControl {
 		return dir.listFiles(filter);
 	}
 
-	public static void main(String[] args) throws Exception {
-
-		System.out.println("Starting the Managed Gateway...");
-		
-		WatsonControl sample = new WatsonControl();
-		try {
-			sample.init(PROPERTIES_FILE_NAME);
-			
-			// sample.initializeEventTypes();
-			
-			sample.apiFactory.createApplicationInterfaces();
-			sample.phyFactory.createPhysicalInterfaces();
-
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-			System.err.flush();
-		} finally {
-			sample.disconnect();
-		}
-
-		System.out.println(" Exiting...");
-		System.exit(0);
-    }
-	
 	private String getRegistrationMode() {
 		return this.registrationMode;
 	}
@@ -280,4 +286,35 @@ public class WatsonControl {
 			return this.registrationMode;
 		}
 	}
+
+	public void deployConfiguration() {
+		// devFactory.createDeviceTypes();
+		apiFactory.createApplicationInterfaces();
+		phyFactory.createPhysicalInterfaces();
+	}
+	
+	public static void main(String[] args) throws Exception {
+
+		System.out.println("Starting the Managed Gateway...");
+		
+		WatsonControl app = new WatsonControl();
+		try {
+			app.init(PROPERTIES_FILE_NAME);
+			
+			System.out.println("App initialized");
+
+			app.deployConfiguration();
+
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+			System.err.flush();
+		} finally {
+			app.disconnect();
+		}
+
+		System.out.println(" Exiting...");
+		System.exit(0);
+    }
+	
 }

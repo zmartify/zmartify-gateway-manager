@@ -1,4 +1,4 @@
-package com.zmartify.iotf.tools.gateway;
+package com.zmartify.iotf.tools.gateway.factory;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -8,6 +8,7 @@ import org.apache.commons.io.FilenameUtils;
 import com.google.gson.JsonObject;
 import com.ibm.iotf.client.IoTFCReSTException;
 import com.zmartify.iotf.tools.api.ZmartifyAPIClient;
+import com.zmartify.iotf.tools.gateway.WatsonControl;
 
 public class FactoryEventTypes {
 

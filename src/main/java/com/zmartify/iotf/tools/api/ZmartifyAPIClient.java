@@ -407,7 +407,7 @@ public class ZmartifyAPIClient {
         }
         return line;
     }
-
+    
     /**
      * Checks whether the given device exists in the Watson IoT Platform
      *
@@ -1116,7 +1116,7 @@ public class ZmartifyAPIClient {
         return null;
     }
 
-    public JsonObject getDeviceTypeApplicationInterfaces(String deviceType) throws IoTFCReSTException {
+    public JsonArray getDeviceTypeApplicationInterfaces(String deviceType) throws IoTFCReSTException {
     	final String METHOD = "getDeviceTypeApplicationInterfaces";
     	/**
     	 * Form the url based on this swagger documentation
@@ -1135,7 +1135,7 @@ public class ZmartifyAPIClient {
     			// success
     			String result = this.readContent(response, METHOD);
     			JsonElement jsonResponse = new JsonParser().parse(result);
-    			return jsonResponse.getAsJsonObject();
+    			return jsonResponse.getAsJsonArray();
     		}
     	} catch (Exception e) {
     		IoTFCReSTException ex = new IoTFCReSTException(
@@ -1208,8 +1208,6 @@ public class ZmartifyAPIClient {
     	return null;
     }
 
-
-
     public JsonObject getMappings(String deviceType, String applicationInterfaceId) throws IoTFCReSTException {
     	final String METHOD = "getMappings";
     	/**
@@ -1270,29 +1268,25 @@ public class ZmartifyAPIClient {
      * @return
      * @throws IoTFCReSTException
      */
-    public JsonObject updateMappings(String deviceType, String applicationInterfaceId, JsonElement propertiesToBeModified)
+    public JsonObject updateMappings(String deviceType, JsonObject propertiesToBeModified)
             throws IoTFCReSTException {
 
         final String METHOD = "updateMappings";
         /**
          * Form the url based on this swagger documentation
          */
+        String applicationInterfaceId = propertiesToBeModified.get("applicationInterfaceId").getAsString();
         StringBuilder sb = new StringBuilder("https://");
         sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/device/types/")
                 .append(deviceType).append("/mappings/").append(applicationInterfaceId);
 
         int code = 0;
         JsonElement jsonResponse = null;
-        JsonObject jsonRequest = new JsonObject();
         HttpResponse response = null;
         try {
-        	jsonRequest.addProperty("applicationInterfaceId", applicationInterfaceId);
-        	jsonRequest.addProperty("notificationStrategy", "on-state-change");
-        	jsonRequest.add("propertyMappings", propertiesToBeModified);
-        	
-            response = connect("put", sb.toString(), jsonRequest.toString(), null);
+            response = connect("put", sb.toString(), propertiesToBeModified.toString(), null);
             code = response.getStatusLine().getStatusCode();
-            if (code == 200 || code == 409) {
+            if (code == 200 || code == 400) {
                 String result = this.readContent(response, METHOD);
                 jsonResponse = new JsonParser().parse(result);
                 if (code == 200) {
@@ -1320,6 +1314,58 @@ public class ZmartifyAPIClient {
         }
         return null;
     }
+
+   public JsonObject addMappings(String deviceType, JsonElement propertyMappings)
+           throws IoTFCReSTException {
+
+	   final String METHOD = "addMappings";
+
+       /**
+        * Form the url based on this swagger documentation
+        */
+       StringBuilder sb = new StringBuilder("https://");
+       sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/device/types/")
+       	.append(deviceType).append("/mappings");
+
+       int code = 0;
+       HttpResponse response = null;
+       JsonElement jsonResponse = null;
+       try {
+           response = connect("post", sb.toString(), propertyMappings.toString(), null);
+           code = response.getStatusLine().getStatusCode();
+           if (code == 201 || code == 400 || code == 409) {
+               // success
+               String result = this.readContent(response, METHOD);
+               jsonResponse = new JsonParser().parse(result);
+           }
+           if (code == 201) {
+               return jsonResponse.getAsJsonObject();
+           }
+       } catch (Exception e) {
+           IoTFCReSTException ex = new IoTFCReSTException(
+                   "Failure in adding the device Type " + "::" + e.getMessage());
+           ex.initCause(e);
+           throw ex;
+       }
+
+       if (code == 400) {
+           throw new IoTFCReSTException(400, "Invalid request (No body, invalid JSON, " + "unexpected key, bad value)",
+                   jsonResponse);
+       } else if (code == 401) {
+           throw new IoTFCReSTException(401, "The authentication token is empty or invalid");
+       } else if (code == 403) {
+           throw new IoTFCReSTException(403,
+                   "The authentication method is invalid or " + "the API key used does not exist");
+       } else if (code == 409) {
+           throw new IoTFCReSTException(409, "The device type already exists", jsonResponse);
+       } else if (code == 500) {
+           throw new IoTFCReSTException(500, "Unexpected error");
+       }
+       throwException(response, METHOD);
+       return null;
+
+       
+   }
 
     public boolean deleteMappings(String deviceType, String applicationInterfaceId) throws IoTFCReSTException {
     	final String METHOD = "deleteMappings";
@@ -4337,8 +4383,22 @@ public class ZmartifyAPIClient {
     	return getAllSchemas(parameters);
     }
     
+	public JsonObject updateSchemaByName(String name, String schemaFileName) throws IoTFCReSTException {
+		JsonObject response = getSchemaByName(name);
+		if (response.get("meta").getAsJsonObject().get("total_rows").getAsInt() == 0) {
+			return null;
+		} else {
+			JsonArray allSchemas = response.getAsJsonArray("results");
+			for (int i = 0; i < allSchemas.size(); i++) {
+				if (allSchemas.get(i).getAsJsonObject().get("name").getAsString().equals(name)) {
+					return updateSchema(allSchemas.get(i).getAsJsonObject().get("id").getAsString(), schemaFileName);
+				}
+			}
+		}
+		return null;
+	}
+
     public boolean deleteSchemaByName(String name) throws IoTFCReSTException {
-    	final String METHOD = "deleteSchemaByName";
     	JsonObject response = getSchemaByName(name);
     	if (response.get("meta").getAsJsonObject().get("total_rows").getAsInt() == 0) {
     		return false;
@@ -4353,7 +4413,6 @@ public class ZmartifyAPIClient {
     }
 
     public boolean isSchemaExistByName(String name) throws IoTFCReSTException {
-        final String METHOD = "isSchemaExistByName";
         try {
             JsonObject response = getSchemaByName(name);
             return (response.get("meta").getAsJsonObject().get("total_rows").getAsInt() > 0);
@@ -4503,6 +4562,88 @@ public class ZmartifyAPIClient {
     	return false;
     }
 
+    public JsonObject updateSchema(String schemaId, String schemaFileName)
+    		throws IoTFCReSTException {
+
+    	final String METHOD = "updateSchema";
+
+    	/**
+    	 * Form the url based on this swagger documentation
+    	 */
+    	StringBuilder url = new StringBuilder("https://")
+    			.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/schemas/").append(schemaId).append("/content");
+
+    	int code = 0;
+    	HttpResponse response = null;
+    	JsonElement jsonResponse = null;
+    	try {
+    		String encodedString = null;
+
+    		HttpPut put = new HttpPut(url.toString());
+
+    		put.addHeader("Accept", "application/json");
+    		put.addHeader("Accept-Language","en-US");
+
+    		if (!isQuickstart) {
+    			byte[] encoding = Base64.encodeBase64(new String(authKey + ":" + authToken).getBytes());
+    			encodedString = new String(encoding);
+    			put.addHeader("Authorization", "Basic " + encodedString);
+    		}
+
+    		MultipartEntityBuilder entity = MultipartEntityBuilder.create()
+    				.setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
+    				.setContentType(ContentType.MULTIPART_FORM_DATA)
+    				.addTextBody("schemaId", schemaId)
+    				.addBinaryBody("schemaFile", new File(schemaFileName));
+
+    		put.setEntity(entity.build());
+
+    		try {
+    			HttpClient client = HttpClientBuilder.create().useSystemProperties().setSSLContext(sslContext).build();
+    			response = client.execute(put);
+    		} catch (IOException e) {
+    			LoggerUtility.warn(CLASS_NAME, METHOD, "WARNING:" + e.getMessage());
+    			throw e;
+    		}
+
+    		code = response.getStatusLine().getStatusCode();
+
+    		if (code == 204 || code == 400 || code == 409) {
+    			// success
+    			String result = this.readContent(response, METHOD);
+    			jsonResponse = new JsonParser().parse(result);
+    			if (code == 204) {
+    				return jsonResponse.getAsJsonObject();
+    			}
+    		}
+
+    	} catch (Exception e) {
+    		IoTFCReSTException ex = new IoTFCReSTException(
+    				"Failure in adding the schema file " + "::" + e.getMessage());
+    		ex.initCause(e);
+    		throw ex;
+    	}
+
+    	switch (code) {
+    	case 400:
+    		throw new IoTFCReSTException(400, "Invalid request (No body, invalid JSON, " + "unexpected key, bad value)",
+    				jsonResponse);
+    	case 401:
+    		throw new IoTFCReSTException(401, "The authentication token is empty or invalid");
+    	case 403:
+    		throw new IoTFCReSTException(403,
+    				"The authentication method is invalid or " + "the API key used does not exist");
+    	case 404:
+    		throw new IoTFCReSTException(409, "A schema with the specified id does not exist", jsonResponse);
+    	case 500:
+    		throw new IoTFCReSTException(500, "Unexpected error");
+    	default:
+    		throwException(response, METHOD);
+    	}
+    	return null;
+    }
+
+    
     public boolean isEventTypeExist(String eventTypeId) throws IoTFCReSTException {
         final String METHOD = "isEventTypeExist";
         /**
