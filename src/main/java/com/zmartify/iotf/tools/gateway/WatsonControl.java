@@ -212,7 +212,7 @@ public class WatsonControl {
 	public JsonObject addSchema(String schemaName, String schemaType, String description) throws IoTFCReSTException {
 		String name = schemaType + "/" + schemaName;
 		String schemaFileName = WatsonControl.class.getResource("/" + schemaType + "/" + schemaName +".json").getPath();
-		if (!apiClient.isSchemaExistByName(name)) {
+		if (apiClient.isSchemaExistByName(name)) {
 			return apiClient.updateSchemaByName(name, schemaFileName);
 		} else {
 			return apiClient.addSchema(schemaType + "/"+ schemaName, schemaFileName, description);
@@ -286,11 +286,20 @@ public class WatsonControl {
 			return this.registrationMode;
 		}
 	}
+	
+	public void cleanConfiguration() {
+		System.out.println("We are cleaning up the system");
+		devFactory.removeDeviceTypes();
+		evtFactory.removeEventTypes();
+		apiFactory.removeApplicationInterfaces();
+		apiFactory.removeSchemas();
+	}
 
 	public void deployConfiguration() {
-		// devFactory.createDeviceTypes();
-		apiFactory.createApplicationInterfaces();
+		devFactory.createDeviceTypes();
+		evtFactory.createEventTypes();
 		phyFactory.createPhysicalInterfaces();
+		apiFactory.createApplicationInterfaces();
 	}
 	
 	public static void main(String[] args) throws Exception {
@@ -299,10 +308,20 @@ public class WatsonControl {
 		
 		WatsonControl app = new WatsonControl();
 		try {
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
 			app.init(PROPERTIES_FILE_NAME);
 			
-			System.out.println("App initialized");
+			// System.out.println("App initialized" + gson.toJson(ZmartifyDeviceType.AIRTEMPERATURE.getMAPJson()));
 
+			app.cleanConfiguration();
+			System.out.println("Completed first run");
+			app.cleanConfiguration();
+			System.out.println("Completed second run");
+			app.cleanConfiguration();
+			System.out.println("Completed last run - and we will start to build");
+			
+			
 			app.deployConfiguration();
 
 		} catch (Exception e) {

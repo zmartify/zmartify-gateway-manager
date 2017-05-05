@@ -1,14 +1,17 @@
 {
 	"$schema": "http://json-schema.org/draft-04/schema#",
-	"type":"object",
+	"type": "object",
 	"title": "ContactSchema",
-	"description":"Event storing status of e.g. door/window contacts",
+	"description": "Event storing status of e.g. door/window contacts",
 	"properties": {
-		"OpenClosedType": {
-			"description": "Open/Close",
-			"type": "string",
-			"pattern": "OPEN|CLOSE"
+		"d": {
+			"properties": {
+				"OpenClosedType": {
+					"description": "Open/Close",
+					"type": "string",
+					"pattern": "OPEN|CLOSE"
+				}
+			}
 		}
-	},
-	"required": ["OpenClosedType"]
+	}
 }

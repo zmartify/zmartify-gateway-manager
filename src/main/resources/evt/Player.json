@@ -1,18 +1,22 @@
 {
 	"$schema": "http://json-schema.org/draft-04/schema#",
-	"type":"object",
+	"type": "object",
 	"title": "PlayerSchema",
-	"description":"Allows to control players (e.g. audio players)",
+	"description": "Allows to control players (e.g. audio players)",
 	"properties": {
-		"PlayPauseType": {
-			"description": "Control player",
-			"type": "string",
-			"pattern": "PLAY|PAUSE"
-		},
-		"RewindFastforwardType": {
-		  "description": "Rewind, fast forward",
-	       "type": "string",
-	       "pattern": "REWIND|FASTFORWARD"
+		"d": {
+			"properties": {
+				"PlayPauseType": {
+					"description": "Control player",
+					"type": "string",
+					"pattern": "PLAY|PAUSE"
+				},
+				"RewindFastforwardType": {
+					"description": "Rewind, fast forward",
+					"type": "string",
+					"pattern": "REWIND|FASTFORWARD"
+				}
+			}
 		}
 	}
 }

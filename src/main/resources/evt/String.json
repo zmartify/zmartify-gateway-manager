@@ -1,13 +1,16 @@
 {
 	"$schema": "http://json-schema.org/draft-04/schema#",
-	"type":"object",
+	"type": "object",
 	"title": "StringSchema",
-	"description":"defines the structure of a string event",
+	"description": "defines the structure of a string event",
 	"properties": {
-		"StringType": {
-			"description": "Stores text",
-			"type":"string"
+		"d": {
+			"properties": {
+				"StringType": {
+					"description": "Stores text",
+					"type": "string"
+				}
+			}
 		}
-	},
-	"required": ["StringType"]
+	}
 }

@@ -1115,6 +1115,10 @@ public class ZmartifyAPIClient {
         throwException(response, METHOD);
         return null;
     }
+    
+    public JsonObject getAllDeviceTypes() throws IoTFCReSTException { 
+    	return getAllDeviceTypes((ArrayList<NameValuePair>) null);
+    }
 
     public JsonArray getDeviceTypeApplicationInterfaces(String deviceType) throws IoTFCReSTException {
     	final String METHOD = "getDeviceTypeApplicationInterfaces";
@@ -1208,7 +1212,7 @@ public class ZmartifyAPIClient {
     	return null;
     }
 
-    public JsonObject getMappings(String deviceType, String applicationInterfaceId) throws IoTFCReSTException {
+    public JsonArray getMappings(String deviceType, String applicationInterfaceId) throws IoTFCReSTException {
     	final String METHOD = "getMappings";
     	/**
     	 * Form the url based on this swagger documentation
@@ -1228,7 +1232,7 @@ public class ZmartifyAPIClient {
     			// success
     			String result = this.readContent(response, METHOD);
     			JsonElement jsonResponse = new JsonParser().parse(result);
-    			return jsonResponse.getAsJsonObject();
+    			return jsonResponse.getAsJsonArray();
     		}
     	} catch (Exception e) {
     		IoTFCReSTException ex = new IoTFCReSTException(
@@ -1254,7 +1258,7 @@ public class ZmartifyAPIClient {
     	return null;
     }
 
-    public JsonObject getMappings(String deviceType) throws IoTFCReSTException {
+    public JsonArray getMappings(String deviceType) throws IoTFCReSTException {
     	// return all mappings for deviceType
     	return getMappings(deviceType, null);
     }
@@ -4177,7 +4181,7 @@ public class ZmartifyAPIClient {
     	return null;
     }
 
-    public JsonObject patchDeviceType(String deviceType, String operation)
+    private JsonObject patchDeviceType(String deviceType, String operation)
     		throws IoTFCReSTException {
 
     	final String METHOD = "patchDeviceType";
@@ -4196,10 +4200,10 @@ public class ZmartifyAPIClient {
     		request.addProperty("operation", operation);
     		response = connect("patch", sb.toString(), request.toString(), null);
     		code = response.getStatusLine().getStatusCode();
-    		if (code == 202 || code == 400 || code == 409) {
+    		if (code == 200 || code == 202 || code == 400 || code == 409) {
     			String result = this.readContent(response, METHOD);
     			jsonResponse = new JsonParser().parse(result);
-    			if (code == 202) {
+    			if (code == 200 || code == 202) {
     				return jsonResponse.getAsJsonObject();
     			}
     		}
@@ -4388,7 +4392,7 @@ public class ZmartifyAPIClient {
 		if (response.get("meta").getAsJsonObject().get("total_rows").getAsInt() == 0) {
 			return null;
 		} else {
-			JsonArray allSchemas = response.getAsJsonArray("results");
+			JsonArray allSchemas = response.get("results").getAsJsonArray();
 			for (int i = 0; i < allSchemas.size(); i++) {
 				if (allSchemas.get(i).getAsJsonObject().get("name").getAsString().equals(name)) {
 					return updateSchema(allSchemas.get(i).getAsJsonObject().get("id").getAsString(), schemaFileName);
@@ -4809,15 +4813,20 @@ public class ZmartifyAPIClient {
             throw ex;
         }
 
-        if (code == 401) {
+        switch (code) {
+        case 401:
             throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
-        } else if (code == 403) {
+        case 403:
             throw new IoTFCReSTException(code,
                     "The authentication method is invalid or the API key used does not exist");
-        } else if (code == 500) {
+        case 409:
+            throw new IoTFCReSTException(code,
+                    "The event type with the specified id is currently being referenced by another object");
+        case 500:
             throw new IoTFCReSTException(500, "Unexpected error");
-        }
+            default:
         throwException(response, METHOD);
+        }
         return false;
     }
 
@@ -5183,6 +5192,100 @@ public class ZmartifyAPIClient {
     		throwException(response, METHOD);
     		return null;
     	}
+    }
+
+    public JsonObject addPhyscialInterfaceToDeviceType(String deviceType, String physicalInterfaceId) throws IoTFCReSTException {
+        
+    	final String METHOD = "addPhysicalInterfaceToDeviceType";
+    	/**
+    	 * Form the url based on this swagger documentation
+    	 */
+    	StringBuilder sb = new StringBuilder("https://");
+    	sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL)
+    	 .append("/device/types/").append(deviceType);
+
+    	int code = 0;
+    	JsonObject request = new JsonObject();
+    	HttpResponse response = null;
+    	JsonElement jsonResponse = null;
+    	try {
+    		request.addProperty("physicalInterfaceId", physicalInterfaceId);
+    		response = connect("put", sb.toString(), request.toString(), null);
+    		code = response.getStatusLine().getStatusCode();
+    		if (code == 200 || code == 409) {
+    			// success
+    			String result = this.readContent(response, METHOD);
+    			jsonResponse = new JsonParser().parse(result);
+    		}
+    		if (code == 200) {
+    			return jsonResponse.getAsJsonObject();
+    		}
+    	} catch (Exception e) {
+    		IoTFCReSTException ex = new IoTFCReSTException(
+    				"Failure in adding the physical interface to device type " + "::" + e.getMessage());
+    		ex.initCause(e);
+    		throw ex;
+    	}
+
+    	switch (code) {
+    	case 401:
+    		throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
+    	case 403:
+    		throw new IoTFCReSTException(code,
+    				"The authentication method is invalid or " + "the API key used does not exist");
+    	case 404:
+    		throw new IoTFCReSTException(code, "A device type with the specified id does not exist.");
+    	case 409:
+    		throw new IoTFCReSTException(code, "The update could not be completed due to a conflict",
+    				jsonResponse);
+
+    	case 500:
+    		throw new IoTFCReSTException(code, "Unexpected error");
+    	default:
+    		throwException(response, METHOD);
+    		return null;
+    	}
+    }
+
+    public boolean removePhyscialInterfaceFromDeviceType(String deviceType, String physicalInterfaceId) throws IoTFCReSTException {
+    	final String METHOD = "removePhysicalInterfaceFromDeviceType";
+    	/**
+    	 * Form the url based on this swagger documentation
+    	 */
+    	StringBuilder sb = new StringBuilder("https://");
+    	sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL)
+    	.append("/device/types/").append(deviceType)
+    	.append("/physiscalinterfaces/").append(physicalInterfaceId);
+
+    	int code = 0;
+    	HttpResponse response = null;
+    	try {
+    		response = connect("delete", sb.toString(), null, null);
+    		code = response.getStatusLine().getStatusCode();
+    		if (code == 204) {
+    			return true;
+    		}
+    	} catch (Exception e) {
+    		IoTFCReSTException ex = new IoTFCReSTException("Failure in removing the physical Interface" + "::" + e.getMessage());
+    		ex.initCause(e);
+    		throw ex;
+    	}
+
+    	switch (code) {
+    	case 401:
+    		throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
+    	case 403:
+    		throw new IoTFCReSTException(code, "The authentication method is invalid or the API key used does not exist");
+    	case 404:
+    		throw new IoTFCReSTException(code, "A physical interface with the specified id does not exist");
+    	case 409:
+    		throw new IoTFCReSTException(code, "The physical interface with the specified id is currently being referenced by property mappings on the device type");
+    	case 500:
+    		throw new IoTFCReSTException(500, "Unexpected error");
+    	default:
+    		throwException(response, METHOD);
+    	}
+    	return false;
     }
 
     /*

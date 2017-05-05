@@ -1,12 +1,16 @@
 {
 	"$schema": "http://json-schema.org/draft-04/schema#",
-	"type":"object",
-	"title": "NumberSchema","description":"defines the structure of an event",
+	"type": "object",
+	"title": "NumberSchema",
+	"description": "defines the structure of an event",
 	"properties": {
-		"DecimalType": {
-			"description": "A BIGDECIMAL value from OpenHAB",
-			"type":"number"
+		"d": {
+			"properties": {
+				"DecimalType": {
+					"description": "A BIGDECIMAL value from OpenHAB",
+					"type": "number"
+				}
+			}
 		}
-	},
-	"required": ["DecimalType"]
+	}
 }

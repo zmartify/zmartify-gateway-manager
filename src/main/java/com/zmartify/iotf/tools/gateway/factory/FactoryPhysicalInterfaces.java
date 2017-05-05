@@ -1,6 +1,7 @@
 package com.zmartify.iotf.tools.gateway.factory;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.ibm.iotf.client.IoTFCReSTException;
 import com.zmartify.iotf.tools.api.ZmartifyAPIClient;
 import com.zmartify.iotf.tools.gateway.ZmartifyDeviceType;
@@ -36,8 +37,15 @@ public class FactoryPhysicalInterfaces {
 		return null;
 	}
 
+	public void removePhyscialInterfaces() {
+		
+	}
+
 	public void createPhysicalInterface(String eventId, String eventType, String deviceType, String physicalInterfaceName, String description) throws IoTFCReSTException {
+		JsonObject response = new JsonObject();
+		
 		String physicalInterfaceId = addPhysicalInterface(physicalInterfaceName, description);
+
 		if (physicalInterfaceId != null) {
 			// Let's continue, if EventId exists, we first need to remove it
 			if (apiClient.isEventIdExist(physicalInterfaceId, eventId)) {
@@ -49,6 +57,7 @@ public class FactoryPhysicalInterfaces {
 				String eventTypeId = resultArray.get(0).getAsJsonObject().get("id").getAsString();
 				apiClient.attachEventId(physicalInterfaceId, eventId, eventTypeId);
 			}
+			response = apiClient.addPhyscialInterfaceToDeviceType(deviceType, physicalInterfaceId);
 		}
 	}
 

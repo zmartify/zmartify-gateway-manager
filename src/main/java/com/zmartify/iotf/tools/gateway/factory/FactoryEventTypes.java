@@ -5,6 +5,9 @@ import java.util.ArrayList;
 
 import org.apache.commons.io.FilenameUtils;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.ibm.iotf.client.IoTFCReSTException;
 import com.zmartify.iotf.tools.api.ZmartifyAPIClient;
@@ -53,7 +56,7 @@ public class FactoryEventTypes {
 			apiClient.deleteSchemaByName("evt/" + name);
 			return true;
 		} catch (IoTFCReSTException e) {
-			System.out.println("Error removing EventType");
+			System.out.println("Error removing EventType " + e.getHttpCode() + " ::" + e.getMessage());
 			e.printStackTrace();
 			return false;
 		}
@@ -62,11 +65,48 @@ public class FactoryEventTypes {
 	public void createEventTypes() {
 		ArrayList<String> eventTypeList = getEventTypeList();
 		eventTypeList.forEach(name -> {
-			System.out.println(name);
-			removeEventType(name);
-			createEventType(name, "");
+			System.out.println("Event Type     : " + name);
+			JsonObject response;
+			try {
+				response = apiClient.getAllEventTypes();
+				removeEventType(name);
+				response = apiClient.getAllEventTypes();
+				createEventType(name, "");
+				response = apiClient.getAllEventTypes();
+			} catch (IoTFCReSTException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
 		});
+
 	}
 
-	
+	public void removeEventTypes() {
+		String physicalInterfaceId = null;
+		try {
+			JsonArray phyList = apiClient.getAllPhyscialInterfaces().get("results").getAsJsonArray();
+			for (int i = 0; i < phyList.size(); i++) {
+				physicalInterfaceId = phyList.get(i).getAsJsonObject().get("id").getAsString();
+				System.out.println("physicalInterfaceId: " + physicalInterfaceId);
+				JsonArray eventIdList = apiClient.getEventIds(physicalInterfaceId);
+				for (int j = 0; j < eventIdList.size(); j++) {
+					String eventId = eventIdList.get(j).getAsJsonObject().get("eventId").getAsString();
+					System.out.println("Removing eventId: " + eventId);
+					apiClient.removeEventId(physicalInterfaceId, eventId);
+				}
+				apiClient.deletePhysicalInterface(physicalInterfaceId);
+			}
+			JsonArray evtList = apiClient.getEventTypes().get("results").getAsJsonArray();
+			for (int i = 0; i < evtList.size(); i++) {
+				if (apiClient.deleteEventType(evtList.get(i).getAsJsonObject().get("id").getAsString())) {
+					System.out.println("EventType deleted...");
+				}
+			}
+		} catch (IoTFCReSTException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 }

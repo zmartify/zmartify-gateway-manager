@@ -33,6 +33,7 @@ public class FactoryApplicationInterfaces {
 	public boolean createApplicationInterface(ZmartifyDeviceType dt) {
 		JsonObject response = null;
 		String name = dt.getDeviceType();
+		String applicationInterfaceId;
 
 		try {
 			if (!apiClient.isApplicationInterfaceExistByName(name)) {
@@ -40,9 +41,10 @@ public class FactoryApplicationInterfaces {
 				String schemaId = response.get("id").getAsString();
 				response = apiClient.addApplicationInterface(name, dt.getDescription(), schemaId);
 			} else {
-				response = apiClient.getApplicationInterfaceByName(name);
+				response = apiClient.getApplicationInterfaceByName(name).get("results").getAsJsonArray().get(0).getAsJsonObject();
 			}
-			String applicationInterfaceId = response.get("results").getAsJsonArray().get(0).getAsJsonObject().get("id").getAsString();
+			applicationInterfaceId = response.get("id").getAsString();
+
 			JsonArray apiList = apiClient.getDeviceTypeApplicationInterfaces(name);
 			boolean exists = false;
 			for (int i = 0; i < apiList.size() && !exists; i++) {
@@ -58,14 +60,12 @@ public class FactoryApplicationInterfaces {
 			 * Now we will add the mapping to the deviceType, first check if it exists
 			 */
 			try {
-				response = apiClient.getMappings(dt.getDeviceType(), applicationInterfaceId);
+				response = apiClient.getMappings(dt.getDeviceType(), applicationInterfaceId).getAsJsonObject();
 				response = apiClient.updateMappings(dt.getDeviceType(), dt.getMAPJson(applicationInterfaceId));
-				System.out.println("Mapping updated");
 			} catch (IoTFCReSTException e) {
 				if (e.getHttpCode() == 404) {
 					// Mapping does not exist, let's add it
 					response = apiClient.addMappings(dt.getDeviceType(), dt.getMAPJson(applicationInterfaceId));
-					System.out.println("Mapping added");
 				} else {
 					// We got a real error, let's throw the error again.
 					throw e;
@@ -81,7 +81,10 @@ public class FactoryApplicationInterfaces {
 		try {
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			response = apiClient.validateConfiguration(dt.getDeviceType());
-			System.out.println(gson.toJson(response));
+			if (response.get("failures").getAsJsonArray().size() == 0) {
+				System.out.println("Configuration OK!");
+			} else {
+			System.out.println(gson.toJson(response)); }
 
 		} catch (IoTFCReSTException e) {
 			System.out.println("Problems validating - "  + e.getMessage());
@@ -91,24 +94,14 @@ public class FactoryApplicationInterfaces {
 		return true;
 	}
 
-	public boolean removeApplicationInterface(ZmartifyDeviceType dt) {
-		String applicationInterfaceId = null;
+	public boolean removeApplicationInterface(String applicationInterfaceId) {
 		try {
-			JsonArray apiList = apiClient.getDeviceTypeApplicationInterfaces(dt.getDeviceType());
-			for (int i = 0; i < apiList.size(); i++) {
-				JsonObject apiJson = apiList.get(i).getAsJsonObject();
-				if (apiJson.get("name").getAsString().equals(dt.getDeviceType())) {
-					applicationInterfaceId = apiJson.get("id").getAsString();
-				}
-			}
-			if (applicationInterfaceId != null) {
-				apiClient.removeApplicationInterface(dt.getDeviceType(), applicationInterfaceId);
-			}
-			apiClient.deleteApplicationInterfaceByName(dt.getDeviceType());
-			apiClient.deleteSchemaByName("api/" + dt.getDeviceType());
+			// apiClient.removeApplicationInterface(deviceType, applicationInterfaceId);
+			apiClient.deleteApplicationInterface(applicationInterfaceId);
+			// apiClient.deleteSchemaByName("api/" + deviceType);
 			return true;
 		} catch (IoTFCReSTException e) {
-			System.out.println("Error removing ApplicationInterface");
+			System.out.println("Error removing ApplicationInterface" + e.getHttpCode() + " ::" + e.getMessage());
 			e.printStackTrace();
 			return false;
 		}
@@ -116,12 +109,41 @@ public class FactoryApplicationInterfaces {
 
 	public void createApplicationInterfaces() {
 		for (ZmartifyDeviceType dt : ZmartifyDeviceType.values()) {
-			String name = dt.getDeviceType();
-			callBack.writeResourceFile(name, dt.getAPIJson(), "api");
-			// removeApplicationInterface(dt);
+			callBack.writeResourceFile(dt.getDeviceType(), dt.getAPIJson(), "api");
 			if (createApplicationInterface(dt)) {
-				System.out.println("Application interface created: " + name);
+				System.out.println("Application interface created: " + dt.getDeviceType());
 			}
 		}
+	}
+
+	public void removeApplicationInterfaces() {
+		JsonArray apiList;
+		try {
+			apiList = apiClient.getAllApplicationInterfaces().get("results").getAsJsonArray();
+			for (int i = 0; i < apiList.size(); i++) {
+				removeApplicationInterface(apiList.get(i).getAsJsonObject().get("id").getAsString());
+			}
+		} catch (IoTFCReSTException e) {
+			// TODO
+			e.printStackTrace();
+		}
+
+	}
+
+	public void removeSchemas() {
+		try {
+			JsonArray schemaList = apiClient.getAllSchemas().get("results").getAsJsonArray();
+			for (int i = 0; i < schemaList.size(); i++) {
+				String schemaId = schemaList.get(i).getAsJsonObject().get("id").getAsString();
+				if (apiClient.deleteSchema(schemaId)) {
+					System.out.println("Schema deleted");
+				}
+			}
+		} catch (IoTFCReSTException e) {
+			System.out.println("ERROR: " + e.getHttpCode() + " ::" + e.getMessage());
+			e.printStackTrace();
+		}
+		
+		
 	}
 }

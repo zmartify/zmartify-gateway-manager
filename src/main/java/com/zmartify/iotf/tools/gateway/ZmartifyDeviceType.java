@@ -265,23 +265,29 @@ public enum ZmartifyDeviceType {
 		default:
 			switch (eventType) {
 			case "Number":
-			case "DecimalType":
-			case "PercentType":
 			case "Dimmer":
 				addProperty(applicationInterfaceProperty, null, "number", (Number) 0, "%s");
 				break;
-			case "OnOffType":
-			case "OpenClosedtype":
-			case "Contact":
 			case "Switch":
-				addProperty(applicationInterfaceProperty, null, "boolean", (Boolean) false,
-						"%s in [\"NO\",\"OPEN\"] : true : false");
+			case "Contact":
+				addProperty(applicationInterfaceProperty, null, "text", (String) "",
+						"%s");
 				break;
-			case "String":
+			case "DateTime":
+				addProperty(applicationInterfaceProperty, null, "text", (String) "",
+						"%s");
+				break;
+			case "Player":
+			case "Rollershutter":
+				addProperty(applicationInterfaceProperty, null, "text", (String) "",
+						"%s");
+				break;
+			case "HSBType":
+			case "StringType":
 				addProperty(applicationInterfaceProperty, null, "text", (String) "", "%s");
 				break;
 			default:
-				System.out.println("Missing eventType " + eventType);
+				System.out.println("Missing eventProperty " + eventProperty);
 				// do nothing
 				break;
 			}
