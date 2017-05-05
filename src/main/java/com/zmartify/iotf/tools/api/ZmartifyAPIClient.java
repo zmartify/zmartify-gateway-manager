@@ -79,8 +79,11 @@ public class ZmartifyAPIClient {
 
     // Enum for content-type header
     public enum WIoTFContentType {
-        text("text/plain"), json("application/json"), xml("application/xml"), bin(
-                "application/octet-stream"), multipart("multipart/form-data");
+        text("text/plain"),
+        json("application/json"),
+        xml("application/xml"),
+        bin("application/octet-stream"),
+        multipart("multipart/form-data");
 
         WIoTFContentType(String type) {
             mType = type;
@@ -259,16 +262,16 @@ public class ZmartifyAPIClient {
             encodedString = new String(encoding);
         }
         switch (httpOperation) {
-        case "post":
-            return casePostFromConnect(queryParameters, url, METHOD, input, encodedString);
-        case "put":
-            return casePutFromConnect(queryParameters, url, METHOD, input, encodedString);
-        case "patch":
-            return casePatchFromConnect(queryParameters, url, METHOD, input, encodedString);
-        case "get":
-            return caseGetFromConnect(queryParameters, url, METHOD, input, encodedString);
-        case "delete":
-            return caseDeleteFromConnect(queryParameters, url, METHOD, input, encodedString);
+            case "post":
+                return casePostFromConnect(queryParameters, url, METHOD, input, encodedString);
+            case "put":
+                return casePutFromConnect(queryParameters, url, METHOD, input, encodedString);
+            case "patch":
+                return casePatchFromConnect(queryParameters, url, METHOD, input, encodedString);
+            case "get":
+                return caseGetFromConnect(queryParameters, url, METHOD, input, encodedString);
+            case "delete":
+                return caseDeleteFromConnect(queryParameters, url, METHOD, input, encodedString);
         }
         return null;
 
@@ -407,7 +410,7 @@ public class ZmartifyAPIClient {
         }
         return line;
     }
-    
+
     /**
      * Checks whether the given device exists in the Watson IoT Platform
      *
@@ -1115,165 +1118,165 @@ public class ZmartifyAPIClient {
         throwException(response, METHOD);
         return null;
     }
-    
-    public JsonObject getAllDeviceTypes() throws IoTFCReSTException { 
-    	return getAllDeviceTypes((ArrayList<NameValuePair>) null);
+
+    public JsonObject getAllDeviceTypes() throws IoTFCReSTException {
+        return getAllDeviceTypes((ArrayList<NameValuePair>) null);
     }
 
     public JsonArray getDeviceTypeApplicationInterfaces(String deviceType) throws IoTFCReSTException {
-    	final String METHOD = "getDeviceTypeApplicationInterfaces";
-    	/**
-    	 * Form the url based on this swagger documentation
-    	 *
-    	 * http://iot-test-01.hursley.ibm.com/docs/api/v0002.html#!/Bulk_Operations/get_bulk_devices
-    	 */
-    	StringBuilder sb = new StringBuilder("https://");
-    	sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/device/types/").append(deviceType).append("/applicationinterfaces");
+        final String METHOD = "getDeviceTypeApplicationInterfaces";
+        /**
+         * Form the url based on this swagger documentation
+         *
+         * http://iot-test-01.hursley.ibm.com/docs/api/v0002.html#!/Bulk_Operations/get_bulk_devices
+         */
+        StringBuilder sb = new StringBuilder("https://");
+        sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/device/types/")
+                .append(deviceType).append("/applicationinterfaces");
 
-    	HttpResponse response = null;
-    	int code = 0;
-    	try {
-    		response = connect("get", sb.toString(), null, null);
-    		code = response.getStatusLine().getStatusCode();
-    		if (code == 200) {
-    			// success
-    			String result = this.readContent(response, METHOD);
-    			JsonElement jsonResponse = new JsonParser().parse(result);
-    			return jsonResponse.getAsJsonArray();
-    		}
-    	} catch (Exception e) {
-    		IoTFCReSTException ex = new IoTFCReSTException(
-    				"Failure in retrieving the DeviceType Application Interface lists, " + ":: " + e.getMessage());
-    		ex.initCause(e);
-    		throw ex;
-    	}
+        HttpResponse response = null;
+        int code = 0;
+        try {
+            response = connect("get", sb.toString(), null, null);
+            code = response.getStatusLine().getStatusCode();
+            if (code == 200) {
+                // success
+                String result = this.readContent(response, METHOD);
+                JsonElement jsonResponse = new JsonParser().parse(result);
+                return jsonResponse.getAsJsonArray();
+            }
+        } catch (Exception e) {
+            IoTFCReSTException ex = new IoTFCReSTException(
+                    "Failure in retrieving the DeviceType Application Interface lists, " + ":: " + e.getMessage());
+            ex.initCause(e);
+            throw ex;
+        }
 
-    	switch (code) {
-    	case 401:
-    		throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
-    	case 403:
-    		throw new IoTFCReSTException(code,
-    				"The authentication method is invalid or the api key used does not exist");
-    	case 404:
-    		throw new IoTFCReSTException(code,
-    				"A device type with the specified id does not exist");
-    	case 500:
-    		throw new IoTFCReSTException(code, "Unexpected error");
-    	default:
-    		throwException(response, METHOD);
-    	}
-    	return null;
+        switch (code) {
+            case 401:
+                throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
+            case 403:
+                throw new IoTFCReSTException(code,
+                        "The authentication method is invalid or the api key used does not exist");
+            case 404:
+                throw new IoTFCReSTException(code, "A device type with the specified id does not exist");
+            case 500:
+                throw new IoTFCReSTException(code, "Unexpected error");
+            default:
+                throwException(response, METHOD);
+        }
+        return null;
     }
 
-    public JsonObject getDeviceState(String deviceType, String deviceId, String applicationInterfaceId) throws IoTFCReSTException {
-    	final String METHOD = "getDeviceState";
-    	/**
-    	 * Form the url based on this swagger documentation
-    	 *
-    	 */
-    	StringBuilder sb = new StringBuilder("https://");
-    	sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL)
-	    	.append("/device/types/").append(deviceType)
-	    	.append("/devices/").append(deviceId)
-	    	.append("/state/").append(applicationInterfaceId);
-    	
-    	HttpResponse response = null;
-    	int code = 0;
-    	try {
-    		response = connect("get", sb.toString(), null, null);
-    		code = response.getStatusLine().getStatusCode();
-    		if (code == 200) {
-    			// success
-    			String result = this.readContent(response, METHOD);
-    			JsonElement jsonResponse = new JsonParser().parse(result);
-    			return jsonResponse.getAsJsonObject();
-    		}
-    	} catch (Exception e) {
-    		IoTFCReSTException ex = new IoTFCReSTException(
-    				"Failure in retrieving the DeviceType Mappings, " + ":: " + e.getMessage());
-    		ex.initCause(e);
-    		throw ex;
-    	}
+    public JsonObject getDeviceState(String deviceType, String deviceId, String applicationInterfaceId)
+            throws IoTFCReSTException {
+        final String METHOD = "getDeviceState";
+        /**
+         * Form the url based on this swagger documentation
+         *
+         */
+        StringBuilder sb = new StringBuilder("https://");
+        sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/device/types/")
+                .append(deviceType).append("/devices/").append(deviceId).append("/state/")
+                .append(applicationInterfaceId);
 
-    	switch (code) {
-    	case 401:
-    		throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
-    	case 403:
-    		throw new IoTFCReSTException(code,
-    				"The authentication method is invalid or the api key used does not exist");
-    	case 404:
-    		throw new IoTFCReSTException(code,
-    				"A device type with the specified id does not exist");
-    	case 500:
-    		throw new IoTFCReSTException(code, "Unexpected error");
-    	default:
-    		throwException(response, METHOD);
-    	}
-    	return null;
+        HttpResponse response = null;
+        int code = 0;
+        try {
+            response = connect("get", sb.toString(), null, null);
+            code = response.getStatusLine().getStatusCode();
+            if (code == 200) {
+                // success
+                String result = this.readContent(response, METHOD);
+                JsonElement jsonResponse = new JsonParser().parse(result);
+                return jsonResponse.getAsJsonObject();
+            }
+        } catch (Exception e) {
+            IoTFCReSTException ex = new IoTFCReSTException(
+                    "Failure in retrieving the DeviceType Mappings, " + ":: " + e.getMessage());
+            ex.initCause(e);
+            throw ex;
+        }
+
+        switch (code) {
+            case 401:
+                throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
+            case 403:
+                throw new IoTFCReSTException(code,
+                        "The authentication method is invalid or the api key used does not exist");
+            case 404:
+                throw new IoTFCReSTException(code, "A device type with the specified id does not exist");
+            case 500:
+                throw new IoTFCReSTException(code, "Unexpected error");
+            default:
+                throwException(response, METHOD);
+        }
+        return null;
     }
 
     public JsonArray getMappings(String deviceType, String applicationInterfaceId) throws IoTFCReSTException {
-    	final String METHOD = "getMappings";
-    	/**
-    	 * Form the url based on this swagger documentation
-    	 *
-    	 */
-    	StringBuilder sb = new StringBuilder("https://");
-    	sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/device/types/").append(deviceType).append("/mappings");
-    	
-    	if (applicationInterfaceId != null) sb.append("/").append(applicationInterfaceId);
+        final String METHOD = "getMappings";
+        /**
+         * Form the url based on this swagger documentation
+         *
+         */
+        StringBuilder sb = new StringBuilder("https://");
+        sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/device/types/")
+                .append(deviceType).append("/mappings");
 
-    	HttpResponse response = null;
-    	int code = 0;
-    	try {
-    		response = connect("get", sb.toString(), null, null);
-    		code = response.getStatusLine().getStatusCode();
-    		if (code == 200) {
-    			// success
-    			String result = this.readContent(response, METHOD);
-    			JsonElement jsonResponse = new JsonParser().parse(result);
-    			return jsonResponse.getAsJsonArray();
-    		}
-    	} catch (Exception e) {
-    		IoTFCReSTException ex = new IoTFCReSTException(
-    				"Failure in retrieving the DeviceType Mappings, " + ":: " + e.getMessage());
-    		ex.initCause(e);
-    		throw ex;
-    	}
+        if (applicationInterfaceId != null) {
+            sb.append("/").append(applicationInterfaceId);
+        }
 
-    	switch (code) {
-    	case 401:
-    		throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
-    	case 403:
-    		throw new IoTFCReSTException(code,
-    				"The authentication method is invalid or the api key used does not exist");
-    	case 404:
-    		throw new IoTFCReSTException(code,
-    				"A device type with the specified id does not exist");
-    	case 500:
-    		throw new IoTFCReSTException(code, "Unexpected error");
-    	default:
-    		throwException(response, METHOD);
-    	}
-    	return null;
+        HttpResponse response = null;
+        int code = 0;
+        try {
+            response = connect("get", sb.toString(), null, null);
+            code = response.getStatusLine().getStatusCode();
+            if (code == 200) {
+                // success
+                String result = this.readContent(response, METHOD);
+                JsonElement jsonResponse = new JsonParser().parse(result);
+                return jsonResponse.getAsJsonArray();
+            }
+        } catch (Exception e) {
+            IoTFCReSTException ex = new IoTFCReSTException(
+                    "Failure in retrieving the DeviceType Mappings, " + ":: " + e.getMessage());
+            ex.initCause(e);
+            throw ex;
+        }
+
+        switch (code) {
+            case 401:
+                throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
+            case 403:
+                throw new IoTFCReSTException(code,
+                        "The authentication method is invalid or the api key used does not exist");
+            case 404:
+                throw new IoTFCReSTException(code, "A device type with the specified id does not exist");
+            case 500:
+                throw new IoTFCReSTException(code, "Unexpected error");
+            default:
+                throwException(response, METHOD);
+        }
+        return null;
     }
 
     public JsonArray getMappings(String deviceType) throws IoTFCReSTException {
-    	// return all mappings for deviceType
-    	return getMappings(deviceType, null);
+        // return all mappings for deviceType
+        return getMappings(deviceType, null);
     }
 
     /**
      * Updates the property mappings for a specific application interface for the device type.
-     * 
+     *
      * @param deviceType
      * @param applicationInterfaceId
      * @param propertiesToBeModified
      * @return
      * @throws IoTFCReSTException
      */
-    public JsonObject updateMappings(String deviceType, JsonObject propertiesToBeModified)
-            throws IoTFCReSTException {
+    public JsonObject updateMappings(String deviceType, JsonObject propertiesToBeModified) throws IoTFCReSTException {
 
         final String METHOD = "updateMappings";
         /**
@@ -1304,157 +1307,154 @@ public class ZmartifyAPIClient {
         }
 
         switch (code) {
-        case 401:
-            throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
-        case 403:
-            throw new IoTFCReSTException(code,
-                    "The authentication method is invalid or the API key used does not exist");
-        case 404:
-            throw new IoTFCReSTException(code, "A device type with the specified id does not exist or a property mapping for the specified application interface id does not exis");
-        case 500:
-            throw new IoTFCReSTException(code, "Unexpected error");
+            case 401:
+                throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
+            case 403:
+                throw new IoTFCReSTException(code,
+                        "The authentication method is invalid or the API key used does not exist");
+            case 404:
+                throw new IoTFCReSTException(code,
+                        "A device type with the specified id does not exist or a property mapping for the specified application interface id does not exis");
+            case 500:
+                throw new IoTFCReSTException(code, "Unexpected error");
             default:
-        throwException(response, METHOD);
+                throwException(response, METHOD);
         }
         return null;
     }
 
-   public JsonObject addMappings(String deviceType, JsonElement propertyMappings)
-           throws IoTFCReSTException {
+    public JsonObject addMappings(String deviceType, JsonElement propertyMappings) throws IoTFCReSTException {
 
-	   final String METHOD = "addMappings";
+        final String METHOD = "addMappings";
 
-       /**
-        * Form the url based on this swagger documentation
-        */
-       StringBuilder sb = new StringBuilder("https://");
-       sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/device/types/")
-       	.append(deviceType).append("/mappings");
+        /**
+         * Form the url based on this swagger documentation
+         */
+        StringBuilder sb = new StringBuilder("https://");
+        sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/device/types/")
+                .append(deviceType).append("/mappings");
 
-       int code = 0;
-       HttpResponse response = null;
-       JsonElement jsonResponse = null;
-       try {
-           response = connect("post", sb.toString(), propertyMappings.toString(), null);
-           code = response.getStatusLine().getStatusCode();
-           if (code == 201 || code == 400 || code == 409) {
-               // success
-               String result = this.readContent(response, METHOD);
-               jsonResponse = new JsonParser().parse(result);
-           }
-           if (code == 201) {
-               return jsonResponse.getAsJsonObject();
-           }
-       } catch (Exception e) {
-           IoTFCReSTException ex = new IoTFCReSTException(
-                   "Failure in adding the device Type " + "::" + e.getMessage());
-           ex.initCause(e);
-           throw ex;
-       }
+        int code = 0;
+        HttpResponse response = null;
+        JsonElement jsonResponse = null;
+        try {
+            response = connect("post", sb.toString(), propertyMappings.toString(), null);
+            code = response.getStatusLine().getStatusCode();
+            if (code == 201 || code == 400 || code == 409) {
+                // success
+                String result = this.readContent(response, METHOD);
+                jsonResponse = new JsonParser().parse(result);
+            }
+            if (code == 201) {
+                return jsonResponse.getAsJsonObject();
+            }
+        } catch (Exception e) {
+            IoTFCReSTException ex = new IoTFCReSTException(
+                    "Failure in adding the device Type " + "::" + e.getMessage());
+            ex.initCause(e);
+            throw ex;
+        }
 
-       if (code == 400) {
-           throw new IoTFCReSTException(400, "Invalid request (No body, invalid JSON, " + "unexpected key, bad value)",
-                   jsonResponse);
-       } else if (code == 401) {
-           throw new IoTFCReSTException(401, "The authentication token is empty or invalid");
-       } else if (code == 403) {
-           throw new IoTFCReSTException(403,
-                   "The authentication method is invalid or " + "the API key used does not exist");
-       } else if (code == 409) {
-           throw new IoTFCReSTException(409, "The device type already exists", jsonResponse);
-       } else if (code == 500) {
-           throw new IoTFCReSTException(500, "Unexpected error");
-       }
-       throwException(response, METHOD);
-       return null;
+        if (code == 400) {
+            throw new IoTFCReSTException(400, "Invalid request (No body, invalid JSON, " + "unexpected key, bad value)",
+                    jsonResponse);
+        } else if (code == 401) {
+            throw new IoTFCReSTException(401, "The authentication token is empty or invalid");
+        } else if (code == 403) {
+            throw new IoTFCReSTException(403,
+                    "The authentication method is invalid or " + "the API key used does not exist");
+        } else if (code == 409) {
+            throw new IoTFCReSTException(409, "The device type already exists", jsonResponse);
+        } else if (code == 500) {
+            throw new IoTFCReSTException(500, "Unexpected error");
+        }
+        throwException(response, METHOD);
+        return null;
 
-       
-   }
+    }
 
     public boolean deleteMappings(String deviceType, String applicationInterfaceId) throws IoTFCReSTException {
-    	final String METHOD = "deleteMappings";
-    	/**
-    	 * Form the url based on this swagger documentation
-    	 */
-    	StringBuilder sb = new StringBuilder("https://");
-    	sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL)
-    	.append("/device/types/").append(deviceType)
-    	.append("/mappings/").append(applicationInterfaceId);
+        final String METHOD = "deleteMappings";
+        /**
+         * Form the url based on this swagger documentation
+         */
+        StringBuilder sb = new StringBuilder("https://");
+        sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/device/types/")
+                .append(deviceType).append("/mappings/").append(applicationInterfaceId);
 
-    	int code = 0;
-    	HttpResponse response = null;
-    	try {
-    		response = connect("delete", sb.toString(), null, null);
-    		code = response.getStatusLine().getStatusCode();
-    		if (code == 204) {
-    			return true;
-    		}
-    	} catch (Exception e) {
-    		IoTFCReSTException ex = new IoTFCReSTException("Failure in deleting mappings" + "::" + e.getMessage());
-    		ex.initCause(e);
-    		throw ex;
-    	}
+        int code = 0;
+        HttpResponse response = null;
+        try {
+            response = connect("delete", sb.toString(), null, null);
+            code = response.getStatusLine().getStatusCode();
+            if (code == 204) {
+                return true;
+            }
+        } catch (Exception e) {
+            IoTFCReSTException ex = new IoTFCReSTException("Failure in deleting mappings" + "::" + e.getMessage());
+            ex.initCause(e);
+            throw ex;
+        }
 
-    	switch (code) {
-    	case 401:
-    		throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
-    	case 403:
-    		throw new IoTFCReSTException(code, "The authentication method is invalid or the API key used does not exist");
-    	case 404:
-    		throw new IoTFCReSTException(code, "A device type or mappings with the specified id does not exist");
-    	case 500:
-    		throw new IoTFCReSTException(500, "Unexpected error");
-    	default:
-    		throwException(response, METHOD);
-    	}
-    	return false;
+        switch (code) {
+            case 401:
+                throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
+            case 403:
+                throw new IoTFCReSTException(code,
+                        "The authentication method is invalid or the API key used does not exist");
+            case 404:
+                throw new IoTFCReSTException(code, "A device type or mappings with the specified id does not exist");
+            case 500:
+                throw new IoTFCReSTException(500, "Unexpected error");
+            default:
+                throwException(response, METHOD);
+        }
+        return false;
     }
-
 
     public JsonObject getDeviceTypeDeployedConfiguration(String deviceType) throws IoTFCReSTException {
-    	final String METHOD = "getDeviceTypeDeployedConfiguration";
-    	/**
-    	 * Form the url based on this swagger documentation
-    	 *
-    	 */
-    	StringBuilder sb = new StringBuilder("https://");
-    	sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/device/types/").append(deviceType).append("/deployedconfiguration");
+        final String METHOD = "getDeviceTypeDeployedConfiguration";
+        /**
+         * Form the url based on this swagger documentation
+         *
+         */
+        StringBuilder sb = new StringBuilder("https://");
+        sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/device/types/")
+                .append(deviceType).append("/deployedconfiguration");
 
-    	HttpResponse response = null;
-    	int code = 0;
-    	try {
-    		response = connect("get", sb.toString(), null, null);
-    		code = response.getStatusLine().getStatusCode();
-    		if (code == 200) {
-    			// success
-    			String result = this.readContent(response, METHOD);
-    			JsonElement jsonResponse = new JsonParser().parse(result);
-    			return jsonResponse.getAsJsonObject();
-    		}
-    	} catch (Exception e) {
-    		IoTFCReSTException ex = new IoTFCReSTException(
-    				"Failure in retrieving the DeviceType Deployed Configuration, " + ":: " + e.getMessage());
-    		ex.initCause(e);
-    		throw ex;
-    	}
+        HttpResponse response = null;
+        int code = 0;
+        try {
+            response = connect("get", sb.toString(), null, null);
+            code = response.getStatusLine().getStatusCode();
+            if (code == 200) {
+                // success
+                String result = this.readContent(response, METHOD);
+                JsonElement jsonResponse = new JsonParser().parse(result);
+                return jsonResponse.getAsJsonObject();
+            }
+        } catch (Exception e) {
+            IoTFCReSTException ex = new IoTFCReSTException(
+                    "Failure in retrieving the DeviceType Deployed Configuration, " + ":: " + e.getMessage());
+            ex.initCause(e);
+            throw ex;
+        }
 
-    	switch (code) {
-    	case 401:
-    		throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
-    	case 403:
-    		throw new IoTFCReSTException(code,
-    				"The authentication method is invalid or the api key used does not exist");
-    	case 404:
-    		throw new IoTFCReSTException(code,
-    				"A device type with the specified id does not exist");
-    	case 500:
-    		throw new IoTFCReSTException(code, "Unexpected error");
-    	default:
-    		throwException(response, METHOD);
-    	}
-    	return null;
+        switch (code) {
+            case 401:
+                throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
+            case 403:
+                throw new IoTFCReSTException(code,
+                        "The authentication method is invalid or the api key used does not exist");
+            case 404:
+                throw new IoTFCReSTException(code, "A device type with the specified id does not exist");
+            case 500:
+                throw new IoTFCReSTException(code, "Unexpected error");
+            default:
+                throwException(response, METHOD);
+        }
+        return null;
     }
-
 
     /**
      * This method returns all the device types belonging to the organization.
@@ -1923,23 +1923,23 @@ public class ZmartifyAPIClient {
 
         String reason = null;
         switch (code) {
-        case 400:
-            reason = IoTFCReSTException.HTTP_ADD_DEVICE_ERR_400;
-            break;
-        case 401:
-            reason = IoTFCReSTException.HTTP_ADD_DEVICE_ERR_401;
-            break;
-        case 403:
-            reason = IoTFCReSTException.HTTP_ADD_DEVICE_ERR_403;
-            break;
-        case 409:
-            reason = IoTFCReSTException.HTTP_ADD_DEVICE_ERR_409;
-            break;
-        case 500:
-            reason = IoTFCReSTException.HTTP_ADD_DEVICE_ERR_500;
-            break;
-        default:
-            reason = IoTFCReSTException.HTTP_ERR_UNEXPECTED;
+            case 400:
+                reason = IoTFCReSTException.HTTP_ADD_DEVICE_ERR_400;
+                break;
+            case 401:
+                reason = IoTFCReSTException.HTTP_ADD_DEVICE_ERR_401;
+                break;
+            case 403:
+                reason = IoTFCReSTException.HTTP_ADD_DEVICE_ERR_403;
+                break;
+            case 409:
+                reason = IoTFCReSTException.HTTP_ADD_DEVICE_ERR_409;
+                break;
+            case 500:
+                reason = IoTFCReSTException.HTTP_ADD_DEVICE_ERR_500;
+                break;
+            default:
+                reason = IoTFCReSTException.HTTP_ERR_UNEXPECTED;
         }
         throw new IoTFCReSTException(method, sb.toString(), device.toString(), code, reason, jsonResponse);
     }
@@ -2766,21 +2766,21 @@ public class ZmartifyAPIClient {
                 } else {
                     String reason = null;
                     switch (code) {
-                    case 400:
-                        reason = IoTFCReSTException.HTTP_ADD_DM_EXTENSION_ERR_400;
-                        break;
-                    case 401:
-                        reason = IoTFCReSTException.HTTP_ADD_DM_EXTENSION_ERR_401;
-                        break;
-                    case 403:
-                        reason = IoTFCReSTException.HTTP_ADD_DM_EXTENSION_ERR_403;
-                        break;
-                    case 409:
-                        reason = IoTFCReSTException.HTTP_ADD_DM_EXTENSION_ERR_409;
-                        break;
-                    case 500:
-                        reason = IoTFCReSTException.HTTP_ADD_DM_EXTENSION_ERR_500;
-                        break;
+                        case 400:
+                            reason = IoTFCReSTException.HTTP_ADD_DM_EXTENSION_ERR_400;
+                            break;
+                        case 401:
+                            reason = IoTFCReSTException.HTTP_ADD_DM_EXTENSION_ERR_401;
+                            break;
+                        case 403:
+                            reason = IoTFCReSTException.HTTP_ADD_DM_EXTENSION_ERR_403;
+                            break;
+                        case 409:
+                            reason = IoTFCReSTException.HTTP_ADD_DM_EXTENSION_ERR_409;
+                            break;
+                        case 500:
+                            reason = IoTFCReSTException.HTTP_ADD_DM_EXTENSION_ERR_500;
+                            break;
                     }
                     throw new IoTFCReSTException(method, sb.toString(), request, code, reason, jsonResponse);
                 }
@@ -2825,18 +2825,18 @@ public class ZmartifyAPIClient {
                 jsonResponse = new JsonParser().parse(result);
                 String reason = null;
                 switch (code) {
-                case 400:
-                    reason = new String("Invalid request");
-                    break;
-                case 401:
-                    reason = new String("Unauthorized");
-                    break;
-                case 403:
-                    reason = new String("Forbidden");
-                    break;
-                case 500:
-                    reason = new String("Internal server error");
-                    break;
+                    case 400:
+                        reason = new String("Invalid request");
+                        break;
+                    case 401:
+                        reason = new String("Unauthorized");
+                        break;
+                    case 403:
+                        reason = new String("Forbidden");
+                        break;
+                    case 500:
+                        reason = new String("Internal server error");
+                        break;
                 }
                 throw new IoTFCReSTException(code, reason, jsonResponse);
             } else {
@@ -2878,21 +2878,21 @@ public class ZmartifyAPIClient {
                 } else {
                     String reason = null;
                     switch (code) {
-                    case 400:
-                        reason = new String("Invalid request");
-                        break;
-                    case 401:
-                        reason = new String("Unauthorized");
-                        break;
-                    case 403:
-                        reason = new String("Forbidden");
-                        break;
-                    case 404:
-                        reason = new String("Not Found");
-                        break;
-                    case 500:
-                        reason = new String("Internal server error");
-                        break;
+                        case 400:
+                            reason = new String("Invalid request");
+                            break;
+                        case 401:
+                            reason = new String("Unauthorized");
+                            break;
+                        case 403:
+                            reason = new String("Forbidden");
+                            break;
+                        case 404:
+                            reason = new String("Not Found");
+                            break;
+                        case 500:
+                            reason = new String("Internal server error");
+                            break;
                     }
                     throw new IoTFCReSTException(code, reason, jsonResponse);
                 }
@@ -2955,33 +2955,33 @@ public class ZmartifyAPIClient {
             response = connect(method, sb.toString(), request.toString(), null);
             code = response.getStatusLine().getStatusCode();
             switch (code) {
-            case 202:
-                String result = this.readContent(response, METHOD);
-                jsonResponse = new JsonParser().parse(result);
-                break;
-            case 400:
-                ex = new IoTFCReSTException(method, sb.toString(), request.toString(), code,
-                        IoTFCReSTException.HTTP_INITIATE_DM_REQUEST_ERR_400, null);
-                break;
-            case 401:
-                ex = new IoTFCReSTException(method, sb.toString(), request.toString(), code,
-                        IoTFCReSTException.HTTP_INITIATE_DM_REQUEST_ERR_401, null);
-                break;
-            case 403:
-                ex = new IoTFCReSTException(method, sb.toString(), request.toString(), code,
-                        IoTFCReSTException.HTTP_INITIATE_DM_REQUEST_ERR_403, null);
-                break;
-            case 404:
-                ex = new IoTFCReSTException(method, sb.toString(), request.toString(), code,
-                        IoTFCReSTException.HTTP_INITIATE_DM_REQUEST_ERR_404, null);
-                break;
-            case 500:
-                ex = new IoTFCReSTException(method, sb.toString(), request.toString(), code,
-                        IoTFCReSTException.HTTP_INITIATE_DM_REQUEST_ERR_500, null);
-                break;
-            default:
-                ex = new IoTFCReSTException(method, sb.toString(), request.toString(), code,
-                        IoTFCReSTException.HTTP_ERR_UNEXPECTED, null);
+                case 202:
+                    String result = this.readContent(response, METHOD);
+                    jsonResponse = new JsonParser().parse(result);
+                    break;
+                case 400:
+                    ex = new IoTFCReSTException(method, sb.toString(), request.toString(), code,
+                            IoTFCReSTException.HTTP_INITIATE_DM_REQUEST_ERR_400, null);
+                    break;
+                case 401:
+                    ex = new IoTFCReSTException(method, sb.toString(), request.toString(), code,
+                            IoTFCReSTException.HTTP_INITIATE_DM_REQUEST_ERR_401, null);
+                    break;
+                case 403:
+                    ex = new IoTFCReSTException(method, sb.toString(), request.toString(), code,
+                            IoTFCReSTException.HTTP_INITIATE_DM_REQUEST_ERR_403, null);
+                    break;
+                case 404:
+                    ex = new IoTFCReSTException(method, sb.toString(), request.toString(), code,
+                            IoTFCReSTException.HTTP_INITIATE_DM_REQUEST_ERR_404, null);
+                    break;
+                case 500:
+                    ex = new IoTFCReSTException(method, sb.toString(), request.toString(), code,
+                            IoTFCReSTException.HTTP_INITIATE_DM_REQUEST_ERR_500, null);
+                    break;
+                default:
+                    ex = new IoTFCReSTException(method, sb.toString(), request.toString(), code,
+                            IoTFCReSTException.HTTP_ERR_UNEXPECTED, null);
             }
         } catch (Exception e) {
             ex = new IoTFCReSTException("Failure in initiating the Device management Request " + "::" + e.getMessage());
@@ -3069,21 +3069,21 @@ public class ZmartifyAPIClient {
             response = connect(method, sb.toString(), null, null);
             code = response.getStatusLine().getStatusCode();
             switch (code) {
-            case 200:
-                String result = this.readContent(response, METHOD);
-                jsonResponse = new JsonParser().parse(result);
-                break;
-            case 404:
-                ex = new IoTFCReSTException(method, sb.toString(), null, code,
-                        IoTFCReSTException.HTTP_GET_DM_REQUEST_ERR_404, null);
-                break;
-            case 500:
-                ex = new IoTFCReSTException(method, sb.toString(), null, code,
-                        IoTFCReSTException.HTTP_GET_DM_REQUEST_ERR_500, null);
-                break;
-            default:
-                ex = new IoTFCReSTException(method, sb.toString(), null, code, IoTFCReSTException.HTTP_ERR_UNEXPECTED,
-                        null);
+                case 200:
+                    String result = this.readContent(response, METHOD);
+                    jsonResponse = new JsonParser().parse(result);
+                    break;
+                case 404:
+                    ex = new IoTFCReSTException(method, sb.toString(), null, code,
+                            IoTFCReSTException.HTTP_GET_DM_REQUEST_ERR_404, null);
+                    break;
+                case 500:
+                    ex = new IoTFCReSTException(method, sb.toString(), null, code,
+                            IoTFCReSTException.HTTP_GET_DM_REQUEST_ERR_500, null);
+                    break;
+                default:
+                    ex = new IoTFCReSTException(method, sb.toString(), null, code,
+                            IoTFCReSTException.HTTP_ERR_UNEXPECTED, null);
             }
         } catch (Exception e) {
             ex = new IoTFCReSTException(
@@ -3812,7 +3812,7 @@ public class ZmartifyAPIClient {
     /*
      * *** APPLICATION INTERFACE
      */
-    
+
     public JsonObject getAllApplicationInterfaces(List<NameValuePair> parameters) throws IoTFCReSTException {
         final String METHOD = "getApplicationInterfaces(1)";
         /**
@@ -3853,35 +3853,41 @@ public class ZmartifyAPIClient {
     }
 
     public JsonObject getAllApplicationInterfaces() throws IoTFCReSTException {
-    	return getAllApplicationInterfaces((ArrayList<NameValuePair>) null);
+        return getAllApplicationInterfaces((ArrayList<NameValuePair>) null);
     }
 
     public JsonObject getApplicationInterfaceByName(String name) throws IoTFCReSTException {
         ArrayList<NameValuePair> parameters = new ArrayList<NameValuePair>();
         parameters.add(new BasicNameValuePair("name", name));
-    	return getAllApplicationInterfaces(parameters);
+        return getAllApplicationInterfaces(parameters);
     }
-    
+
     public boolean deleteApplicationInterfaceByName(String name) throws IoTFCReSTException {
-    	JsonObject response = getApplicationInterfaceByName(name);
-    	JsonArray allApplicationInterfaces = response.getAsJsonArray("results");
-    	for (int i = 0; i < allApplicationInterfaces.size(); i++) {
-    		deleteApplicationInterface(allApplicationInterfaces.get(i).getAsJsonObject().get("id").getAsString());
-    	}
-    	return true;
+        JsonObject response = getApplicationInterfaceByName(name);
+        JsonArray allApplicationInterfaces = response.getAsJsonArray("results");
+        for (int i = 0; i < allApplicationInterfaces.size(); i++) {
+            deleteApplicationInterface(allApplicationInterfaces.get(i).getAsJsonObject().get("id").getAsString());
+        }
+        return true;
     }
 
     public boolean isApplicationInterfaceExistByName(String name) throws IoTFCReSTException {
         try {
             JsonObject response = getApplicationInterfaceByName(name);
-            return (response.get("meta").getAsJsonObject().get("total_rows").getAsInt() > 0);
+            JsonArray applicationInterfaceList = response.get("results").getAsJsonArray();
+            for (int i = 0; i < applicationInterfaceList.size(); i++) {
+                if (applicationInterfaceList.get(i).getAsJsonObject().get("name").getAsString().equals(name)) {
+                    return true;
+                }
+            }
+            return false;
         } catch (Exception e) {
-            IoTFCReSTException ex = new IoTFCReSTException("Failure in getting Application Interface " + "::" + e.getMessage());
+            IoTFCReSTException ex = new IoTFCReSTException(
+                    "Failure in getting Application Interface " + "::" + e.getMessage());
             ex.initCause(e);
             throw ex;
         }
     }
-    
 
     public JsonObject getApplicationInterface(String applicationInterfaceId) throws IoTFCReSTException {
         final String METHOD = "getApplicationInterfaces";
@@ -3890,14 +3896,14 @@ public class ZmartifyAPIClient {
          *
          */
         StringBuilder sb = new StringBuilder("https://");
-        sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL)
-        	.append("/applicationinterfaces").append("/" + applicationInterfaceId);
-        
+        sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/applicationinterfaces")
+                .append("/" + applicationInterfaceId);
+
         int code = 0;
         HttpResponse response = null;
         JsonElement jsonResponse = null;
         try {
-            response = connect("get", sb.toString(),null,null);
+            response = connect("get", sb.toString(), null, null);
             code = response.getStatusLine().getStatusCode();
             String result = this.readContent(response, METHOD);
             jsonResponse = new JsonParser().parse(result);
@@ -3912,326 +3918,342 @@ public class ZmartifyAPIClient {
         }
 
         switch (code) {
-        case 304:
-            throw new IoTFCReSTException(code, "The state of the application interface definition has not been modified", jsonResponse);
-        case 400:
-            throw new IoTFCReSTException(code, "Bad Request", jsonResponse);
-		case 401:
-            throw new IoTFCReSTException(code, "The authentication token is empty or invalid", jsonResponse);
-		case 403:
-            throw new IoTFCReSTException(code, "Then authentication method is invalid or the API key used does not exist", jsonResponse);
-		case 404:
-            throw new IoTFCReSTException(code, "An application interface with the specified id does not exist.", jsonResponse);
-		case 500:
-            throw new IoTFCReSTException(code, "Unexpected error", jsonResponse);
-		default:
-			throw new IoTFCReSTException(code, "", jsonResponse); 
+            case 304:
+                throw new IoTFCReSTException(code,
+                        "The state of the application interface definition has not been modified", jsonResponse);
+            case 400:
+                throw new IoTFCReSTException(code, "Bad Request", jsonResponse);
+            case 401:
+                throw new IoTFCReSTException(code, "The authentication token is empty or invalid", jsonResponse);
+            case 403:
+                throw new IoTFCReSTException(code,
+                        "Then authentication method is invalid or the API key used does not exist", jsonResponse);
+            case 404:
+                throw new IoTFCReSTException(code, "An application interface with the specified id does not exist.",
+                        jsonResponse);
+            case 500:
+                throw new IoTFCReSTException(code, "Unexpected error", jsonResponse);
+            default:
+                throw new IoTFCReSTException(code, "", jsonResponse);
         }
     }
 
-    public JsonObject addApplicationInterface(String name, String description, String schemaId) throws IoTFCReSTException {
+    public JsonObject addApplicationInterface(String name, String description, String schemaId)
+            throws IoTFCReSTException {
 
-    	final String METHOD = "addApplicationInterface";
-    	/**
-    	 * Form the url based on this swagger documentation
-    	 */
-    	StringBuilder sb = new StringBuilder("https://");
-    	sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/applicationinterfaces");
+        final String METHOD = "addApplicationInterface";
+        /**
+         * Form the url based on this swagger documentation
+         */
+        StringBuilder sb = new StringBuilder("https://");
+        sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/applicationinterfaces");
 
-    	int code = 0;
-    	HttpResponse response = null;
-    	JsonElement jsonResponse = null;
-    	try {
-    		JsonObject jsonRequest = new JsonObject();
-    		jsonRequest.addProperty("name", name);
-    		jsonRequest.addProperty("description", description);
-    		jsonRequest.addProperty("schemaId", schemaId);
+        int code = 0;
+        HttpResponse response = null;
+        JsonElement jsonResponse = null;
+        try {
+            JsonObject jsonRequest = new JsonObject();
+            jsonRequest.addProperty("name", name);
+            jsonRequest.addProperty("description", description);
+            jsonRequest.addProperty("schemaId", schemaId);
 
-    		response = connect("post", sb.toString(), jsonRequest.toString(), null);
-    		code = response.getStatusLine().getStatusCode();
-    		if (code == 201 || code == 400 || code == 409) {
-    			// success
-    			String result = this.readContent(response, METHOD);
-    			jsonResponse = new JsonParser().parse(result);
-    		}
-    		if (code == 201) {
-    			return jsonResponse.getAsJsonObject();
-    		}
-    	} catch (Exception e) {
-    		IoTFCReSTException ex = new IoTFCReSTException(
-    				"Failure in adding the application interface " + "::" + e.getMessage());
-    		ex.initCause(e);
-    		throw ex;
-    	}
+            response = connect("post", sb.toString(), jsonRequest.toString(), null);
+            code = response.getStatusLine().getStatusCode();
+            if (code == 201 || code == 400 || code == 409) {
+                // success
+                String result = this.readContent(response, METHOD);
+                jsonResponse = new JsonParser().parse(result);
+            }
+            if (code == 201) {
+                return jsonResponse.getAsJsonObject();
+            }
+        } catch (Exception e) {
+            IoTFCReSTException ex = new IoTFCReSTException(
+                    "Failure in adding the application interface " + "::" + e.getMessage());
+            ex.initCause(e);
+            throw ex;
+        }
 
-    	switch (code) {
-    	case 400:
-    		throw new IoTFCReSTException(400, "Invalid request (No body, invalid JSON, " + "unexpected key, bad value)",
-    				jsonResponse);
-    	case 401:
-    		throw new IoTFCReSTException(401, "The authentication token is empty or invalid");
-    	case 403:
-    		throw new IoTFCReSTException(403,
-    				"The authentication method is invalid or " + "the API key used does not exist");
-    	case 409:
-    		throw new IoTFCReSTException(409, "The application interface already exists", jsonResponse);
-    	case 500:
-    		throw new IoTFCReSTException(500, "Unexpected error");
-    	default:
-    		throwException(response, METHOD);
-    		return null;
-    	}
+        switch (code) {
+            case 400:
+                throw new IoTFCReSTException(400,
+                        "Invalid request (No body, invalid JSON, " + "unexpected key, bad value)", jsonResponse);
+            case 401:
+                throw new IoTFCReSTException(401, "The authentication token is empty or invalid");
+            case 403:
+                throw new IoTFCReSTException(403,
+                        "The authentication method is invalid or " + "the API key used does not exist");
+            case 409:
+                throw new IoTFCReSTException(409, "The application interface already exists", jsonResponse);
+            case 500:
+                throw new IoTFCReSTException(500, "Unexpected error");
+            default:
+                throwException(response, METHOD);
+                return null;
+        }
     }
 
     /**
-     * Associates an application interface with the specified device type. The application interface must already exist within the organization in the Watson IoT Platform.
-     * 
+     * Associates an application interface with the specified device type. The application interface must already exist
+     * within the organization in the Watson IoT Platform.
+     *
      * @param deviceType
      * @param applicationInterface
      * @return
      * @throws IoTFCReSTException
      */
-    public JsonElement attachApplicationInterface(String deviceType, JsonObject applicationInterface) throws IoTFCReSTException {
-    
-    	final String METHOD = "attachApplicationInterface";
-    	/**
-    	 * Form the url based on this swagger documentation
-    	 */
-    	StringBuilder sb = new StringBuilder("https://");
-    	sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL)
-    	 .append("/device/types/").append(deviceType).append("/applicationinterfaces");
+    public JsonElement attachApplicationInterface(String deviceType, JsonObject applicationInterface)
+            throws IoTFCReSTException {
 
-    	int code = 0;
-    	HttpResponse response = null;
-    	JsonElement jsonResponse = null;
-    	try {
-    		response = connect("post", sb.toString(), applicationInterface.toString(), null);
-    		code = response.getStatusLine().getStatusCode();
-    		if (code == 201 || code == 400) {
-    			// success
-    			String result = this.readContent(response, METHOD);
-    			jsonResponse = new JsonParser().parse(result);
-    		}
-    		if (code == 201) {
-    			return jsonResponse.getAsJsonObject();
-    		}
-    	} catch (Exception e) {
-    		IoTFCReSTException ex = new IoTFCReSTException(
-    				"Failure in associating the application interface " + "::" + e.getMessage());
-    		ex.initCause(e);
-    		throw ex;
-    	}
+        final String METHOD = "attachApplicationInterface";
+        /**
+         * Form the url based on this swagger documentation
+         */
+        StringBuilder sb = new StringBuilder("https://");
+        sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/device/types/")
+                .append(deviceType).append("/applicationinterfaces");
 
-    	switch (code) {
-    	case 400:
-    		throw new IoTFCReSTException(400, "Invalid request (No body, invalid JSON, " + "unexpected key, bad value)",
-    				jsonResponse);
-    	case 401:
-    		throw new IoTFCReSTException(401, "The authentication token is empty or invalid");
-    	case 403:
-    		throw new IoTFCReSTException(403,
-    				"The authentication method is invalid or " + "the API key used does not exist");
-    	case 404:
-    		throw new IoTFCReSTException(404, "A device type with the specified id does not exist.");
-    	case 500:
-    		throw new IoTFCReSTException(500, "Unexpected error");
-    	default:
-    		throwException(response, METHOD);
-    		return null;
-    	}
+        int code = 0;
+        HttpResponse response = null;
+        JsonElement jsonResponse = null;
+        try {
+            response = connect("post", sb.toString(), applicationInterface.toString(), null);
+            code = response.getStatusLine().getStatusCode();
+            if (code == 201 || code == 400) {
+                // success
+                String result = this.readContent(response, METHOD);
+                jsonResponse = new JsonParser().parse(result);
+            }
+            if (code == 201) {
+                return jsonResponse.getAsJsonObject();
+            }
+        } catch (Exception e) {
+            IoTFCReSTException ex = new IoTFCReSTException(
+                    "Failure in associating the application interface " + "::" + e.getMessage());
+            ex.initCause(e);
+            throw ex;
+        }
+
+        switch (code) {
+            case 400:
+                throw new IoTFCReSTException(400,
+                        "Invalid request (No body, invalid JSON, " + "unexpected key, bad value)", jsonResponse);
+            case 401:
+                throw new IoTFCReSTException(401, "The authentication token is empty or invalid");
+            case 403:
+                throw new IoTFCReSTException(403,
+                        "The authentication method is invalid or " + "the API key used does not exist");
+            case 404:
+                throw new IoTFCReSTException(404, "A device type with the specified id does not exist.");
+            case 500:
+                throw new IoTFCReSTException(500, "Unexpected error");
+            default:
+                throwException(response, METHOD);
+                return null;
+        }
     }
 
     /**
      * Disassociates the application interface with the specified id from the device type.
-     * 
-     * Please note the the delete will fail if the application interface being removed from 
+     *
+     * Please note the the delete will fail if the application interface being removed from
      * the device type is referenced in the property mappings for the device type.
-     * 
+     *
      * @param deviceType
      * @param applicationInterfaceId
      * @return
      * @throws IoTFCReSTException
      */
-    public boolean removeApplicationInterface(String deviceType, String applicationInterfaceId) throws IoTFCReSTException {
-    	final String METHOD = "removeApplicationInterface";
-    	/**
-    	 * Form the url based on this swagger documentation
-    	 */
-    	StringBuilder sb = new StringBuilder("https://");
-    	sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL)
-    	.append("/device/types/").append(deviceType)
-    	.append("/applicationinterfaces/").append(applicationInterfaceId);
+    public boolean removeApplicationInterface(String deviceType, String applicationInterfaceId)
+            throws IoTFCReSTException {
+        final String METHOD = "removeApplicationInterface";
+        /**
+         * Form the url based on this swagger documentation
+         */
+        StringBuilder sb = new StringBuilder("https://");
+        sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/device/types/")
+                .append(deviceType).append("/applicationinterfaces/").append(applicationInterfaceId);
 
-    	int code = 0;
-    	HttpResponse response = null;
-    	try {
-    		response = connect("delete", sb.toString(), null, null);
-    		code = response.getStatusLine().getStatusCode();
-    		if (code == 204) {
-    			return true;
-    		}
-    	} catch (Exception e) {
-    		IoTFCReSTException ex = new IoTFCReSTException("Failure in removing the Application Interface" + "::" + e.getMessage());
-    		ex.initCause(e);
-    		throw ex;
-    	}
+        int code = 0;
+        HttpResponse response = null;
+        try {
+            response = connect("delete", sb.toString(), null, null);
+            code = response.getStatusLine().getStatusCode();
+            if (code == 204) {
+                return true;
+            }
+        } catch (Exception e) {
+            IoTFCReSTException ex = new IoTFCReSTException(
+                    "Failure in removing the Application Interface" + "::" + e.getMessage());
+            ex.initCause(e);
+            throw ex;
+        }
 
-    	switch (code) {
-    	case 401:
-    		throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
-    	case 403:
-    		throw new IoTFCReSTException(code, "The authentication method is invalid or the API key used does not exist");
-    	case 404:
-    		throw new IoTFCReSTException(code, "An application interface with the specified id does not exist");
-    	case 409:
-    		throw new IoTFCReSTException(code, "The application interface with the specified id is currently being referenced by property mappings on the device type");
-    	case 500:
-    		throw new IoTFCReSTException(500, "Unexpected error");
-    	default:
-    		throwException(response, METHOD);
-    	}
-    	return false;
+        switch (code) {
+            case 401:
+                throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
+            case 403:
+                throw new IoTFCReSTException(code,
+                        "The authentication method is invalid or the API key used does not exist");
+            case 404:
+                throw new IoTFCReSTException(code, "An application interface with the specified id does not exist");
+            case 409:
+                throw new IoTFCReSTException(code,
+                        "The application interface with the specified id is currently being referenced by property mappings on the device type");
+            case 500:
+                throw new IoTFCReSTException(500, "Unexpected error");
+            default:
+                throwException(response, METHOD);
+        }
+        return false;
     }
 
     public boolean deleteApplicationInterface(String applicationInterfaceId) throws IoTFCReSTException {
-    	final String METHOD = "deleteApplicationInterface";
-    	/**
-    	 * Form the url based on this swagger documentation
-    	 */
-    	StringBuilder sb = new StringBuilder("https://");
-    	sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/applicationinterfaces/")
-    	.append(applicationInterfaceId);
+        final String METHOD = "deleteApplicationInterface";
+        /**
+         * Form the url based on this swagger documentation
+         */
+        StringBuilder sb = new StringBuilder("https://");
+        sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/applicationinterfaces/")
+                .append(applicationInterfaceId);
 
-    	int code = 0;
-    	HttpResponse response = null;
-    	try {
-    		response = connect("delete", sb.toString(), null, null);
-    		code = response.getStatusLine().getStatusCode();
-    		if (code == 204) {
-    			return true;
-    		}
-    	} catch (Exception e) {
-    		IoTFCReSTException ex = new IoTFCReSTException("Failure in deleting the Application Interface" + "::" + e.getMessage());
-    		ex.initCause(e);
-    		throw ex;
-    	}
+        int code = 0;
+        HttpResponse response = null;
+        try {
+            response = connect("delete", sb.toString(), null, null);
+            code = response.getStatusLine().getStatusCode();
+            if (code == 204) {
+                return true;
+            }
+        } catch (Exception e) {
+            IoTFCReSTException ex = new IoTFCReSTException(
+                    "Failure in deleting the Application Interface" + "::" + e.getMessage());
+            ex.initCause(e);
+            throw ex;
+        }
 
-    	switch (code) {
-    	case 401:
-    		throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
-    	case 403:
-    		throw new IoTFCReSTException(code, "The authentication method is invalid or the API key used does not exist");
-    	case 404:
-    		throw new IoTFCReSTException(code, "An application interface with the specified id does not exist");
-    	case 409:
-    		throw new IoTFCReSTException(code, "The application interface with the specified id is currently being referenced by another object");
-    	case 500:
-    		throw new IoTFCReSTException(500, "Unexpected error");
-    	default:
-    		throwException(response, METHOD);
-    	}
-    	return false;
+        switch (code) {
+            case 401:
+                throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
+            case 403:
+                throw new IoTFCReSTException(code,
+                        "The authentication method is invalid or the API key used does not exist");
+            case 404:
+                throw new IoTFCReSTException(code, "An application interface with the specified id does not exist");
+            case 409:
+                throw new IoTFCReSTException(code,
+                        "The application interface with the specified id is currently being referenced by another object");
+            case 500:
+                throw new IoTFCReSTException(500, "Unexpected error");
+            default:
+                throwException(response, METHOD);
+        }
+        return false;
     }
 
     public JsonObject updateApplicationInterface(String applicationInterfaceId, JsonElement propertiesToBeModified)
-    		throws IoTFCReSTException {
+            throws IoTFCReSTException {
 
-    	final String METHOD = "updateApplicationInterfac";
-    	/**
-    	 * Form the url based on this swagger documentation
-    	 */
-    	StringBuilder sb = new StringBuilder("https://");
-    	sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/applicationinterfaces/")
-    	.append(applicationInterfaceId);
+        final String METHOD = "updateApplicationInterfac";
+        /**
+         * Form the url based on this swagger documentation
+         */
+        StringBuilder sb = new StringBuilder("https://");
+        sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/applicationinterfaces/")
+                .append(applicationInterfaceId);
 
-    	int code = 0;
-    	JsonElement jsonResponse = null;
-    	HttpResponse response = null;
-    	try {
-    		response = connect("put", sb.toString(), propertiesToBeModified.toString(), null);
-    		code = response.getStatusLine().getStatusCode();
-    		if (code == 200 || code == 409) {
-    			String result = this.readContent(response, METHOD);
-    			jsonResponse = new JsonParser().parse(result);
-    			if (code == 200) {
-    				return jsonResponse.getAsJsonObject();
-    			}
-    		}
-    	} catch (Exception e) {
-    		IoTFCReSTException ex = new IoTFCReSTException("Failure in updating the application interface " + "::" + e.getMessage());
-    		ex.initCause(e);
-    		throw ex;
-    	}
+        int code = 0;
+        JsonElement jsonResponse = null;
+        HttpResponse response = null;
+        try {
+            response = connect("put", sb.toString(), propertiesToBeModified.toString(), null);
+            code = response.getStatusLine().getStatusCode();
+            if (code == 200 || code == 409) {
+                String result = this.readContent(response, METHOD);
+                jsonResponse = new JsonParser().parse(result);
+                if (code == 200) {
+                    return jsonResponse.getAsJsonObject();
+                }
+            }
+        } catch (Exception e) {
+            IoTFCReSTException ex = new IoTFCReSTException(
+                    "Failure in updating the application interface " + "::" + e.getMessage());
+            ex.initCause(e);
+            throw ex;
+        }
 
-    	switch (code) {
-    	case 401:
-    		throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
-    	case 403:
-    		throw new IoTFCReSTException(code,
-    				"The authentication method is invalid or the API key used does not exist");
-    	case 404:
-    		throw new IoTFCReSTException(code, "An application interface with the specified id does not exist");
-    	case 412:
-    		throw new IoTFCReSTException(code, "The state of the application interface has been modified since the client retrieved its representation", jsonResponse);
-    	case 500:
-    		throw new IoTFCReSTException(500, "Unexpected error");
-    	default:
-    		throwException(response, METHOD); }
+        switch (code) {
+            case 401:
+                throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
+            case 403:
+                throw new IoTFCReSTException(code,
+                        "The authentication method is invalid or the API key used does not exist");
+            case 404:
+                throw new IoTFCReSTException(code, "An application interface with the specified id does not exist");
+            case 412:
+                throw new IoTFCReSTException(code,
+                        "The state of the application interface has been modified since the client retrieved its representation",
+                        jsonResponse);
+            case 500:
+                throw new IoTFCReSTException(500, "Unexpected error");
+            default:
+                throwException(response, METHOD);
+        }
 
-    	return null;
+        return null;
     }
 
-    private JsonObject patchDeviceType(String deviceType, String operation)
-    		throws IoTFCReSTException {
+    private JsonObject patchDeviceType(String deviceType, String operation) throws IoTFCReSTException {
 
-    	final String METHOD = "patchDeviceType";
-    	/**
-    	 * Form the url based on this swagger documentation
-    	 */
-    	StringBuilder sb = new StringBuilder("https://");
-    	sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/device/types/")
-    	.append(deviceType);
+        final String METHOD = "patchDeviceType";
+        /**
+         * Form the url based on this swagger documentation
+         */
+        StringBuilder sb = new StringBuilder("https://");
+        sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/device/types/")
+                .append(deviceType);
 
-    	int code = 0;
-    	JsonElement jsonResponse = null;
-    	HttpResponse response = null;
-    	JsonObject request = new JsonObject();
-    	try {
-    		request.addProperty("operation", operation);
-    		response = connect("patch", sb.toString(), request.toString(), null);
-    		code = response.getStatusLine().getStatusCode();
-    		if (code == 200 || code == 202 || code == 400 || code == 409) {
-    			String result = this.readContent(response, METHOD);
-    			jsonResponse = new JsonParser().parse(result);
-    			if (code == 200 || code == 202) {
-    				return jsonResponse.getAsJsonObject();
-    			}
-    		}
-    	} catch (Exception e) {
-    		IoTFCReSTException ex = new IoTFCReSTException(
-    				"Failure in updating the EventType " + "::" + e.getMessage());
-    		ex.initCause(e);
-    		throw ex;
-    	}
+        int code = 0;
+        JsonElement jsonResponse = null;
+        HttpResponse response = null;
+        JsonObject request = new JsonObject();
+        try {
+            request.addProperty("operation", operation);
+            response = connect("patch", sb.toString(), request.toString(), null);
+            code = response.getStatusLine().getStatusCode();
+            if (code == 200 || code == 202 || code == 400 || code == 409) {
+                String result = this.readContent(response, METHOD);
+                jsonResponse = new JsonParser().parse(result);
+                if (code == 200 || code == 202) {
+                    return jsonResponse.getAsJsonObject();
+                }
+            }
+        } catch (Exception e) {
+            IoTFCReSTException ex = new IoTFCReSTException(
+                    "Failure in updating the EventType " + "::" + e.getMessage());
+            ex.initCause(e);
+            throw ex;
+        }
 
-    	switch (code) {
-    	case 400:
-    		throw new IoTFCReSTException(code, "Invalid request (No body, invalid JSON, unexpected key, bad value)", jsonResponse);
-    	case 401:
-    		throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
-    	case 403:
-    		throw new IoTFCReSTException(code,
-    				"The authentication method is invalid or the API key used does not exist");
-    	case 404:
-    		throw new IoTFCReSTException(code, "The device type does not exist");
-    	case 409:
-    		throw new IoTFCReSTException(code, "The update could not be completed due to a conflict", jsonResponse);
-    	case 500:
-    		throw new IoTFCReSTException(500, "Unexpected error");
-    	default:
-    		throwException(response, METHOD);
-    	}
-    	return null;
+        switch (code) {
+            case 400:
+                throw new IoTFCReSTException(code, "Invalid request (No body, invalid JSON, unexpected key, bad value)",
+                        jsonResponse);
+            case 401:
+                throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
+            case 403:
+                throw new IoTFCReSTException(code,
+                        "The authentication method is invalid or the API key used does not exist");
+            case 404:
+                throw new IoTFCReSTException(code, "The device type does not exist");
+            case 409:
+                throw new IoTFCReSTException(code, "The update could not be completed due to a conflict", jsonResponse);
+            case 500:
+                throw new IoTFCReSTException(500, "Unexpected error");
+            default:
+                throwException(response, METHOD);
+        }
+        return null;
     }
 
     public JsonObject validateConfiguration(String deviceType) throws IoTFCReSTException {
@@ -4268,8 +4290,7 @@ public class ZmartifyAPIClient {
                 return true;
             }
         } catch (Exception e) {
-            IoTFCReSTException ex = new IoTFCReSTException(
-                    "Failure in getting the schema " + "::" + e.getMessage());
+            IoTFCReSTException ex = new IoTFCReSTException("Failure in getting the schema " + "::" + e.getMessage());
             ex.initCause(e);
             throw ex;
         }
@@ -4297,13 +4318,15 @@ public class ZmartifyAPIClient {
         StringBuilder sb = new StringBuilder("https://");
         sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/schemas");
 
-        if (schemaId != null) sb.append("/" + schemaId);
-        
+        if (schemaId != null) {
+            sb.append("/" + schemaId);
+        }
+
         int code = 0;
         HttpResponse response = null;
         JsonElement jsonResponse = null;
         try {
-            response = connect("get", sb.toString(),null,null);
+            response = connect("get", sb.toString(), null, null);
             code = response.getStatusLine().getStatusCode();
             String result = this.readContent(response, METHOD);
             jsonResponse = new JsonParser().parse(result);
@@ -4318,20 +4341,23 @@ public class ZmartifyAPIClient {
         }
 
         switch (code) {
-        case 304:
-            throw new IoTFCReSTException(code, "The state of the schema definition has been modified", jsonResponse);
-        case 400:
-            throw new IoTFCReSTException(code, "Bad Request", jsonResponse);
-		case 401:
-            throw new IoTFCReSTException(code, "The authentication token is empty or invalid", jsonResponse);
-		case 403:
-            throw new IoTFCReSTException(code, "Then authentication method is invalid or the API key used does not exist", jsonResponse);
-		case 404:
-            throw new IoTFCReSTException(code, "A schema definition with the specified id does not exist.", jsonResponse);
-		case 500:
-            throw new IoTFCReSTException(code, "Unexpected error", jsonResponse);
-		default:
-			throw new IoTFCReSTException(code, "", jsonResponse); 
+            case 304:
+                throw new IoTFCReSTException(code, "The state of the schema definition has been modified",
+                        jsonResponse);
+            case 400:
+                throw new IoTFCReSTException(code, "Bad Request", jsonResponse);
+            case 401:
+                throw new IoTFCReSTException(code, "The authentication token is empty or invalid", jsonResponse);
+            case 403:
+                throw new IoTFCReSTException(code,
+                        "Then authentication method is invalid or the API key used does not exist", jsonResponse);
+            case 404:
+                throw new IoTFCReSTException(code, "A schema definition with the specified id does not exist.",
+                        jsonResponse);
+            case 500:
+                throw new IoTFCReSTException(code, "Unexpected error", jsonResponse);
+            default:
+                throw new IoTFCReSTException(code, "", jsonResponse);
         }
     }
 
@@ -4361,76 +4387,81 @@ public class ZmartifyAPIClient {
             throw ex;
         }
         switch (code) {
-        case 401:
-            throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
-        case 403:
-            throw new IoTFCReSTException(code,
-                    "The authentication method is invalid or the api key used does not exist");
-        case 404:
-            throw new IoTFCReSTException(code, "The organization does not exist");
-        case 500:
-            throw new IoTFCReSTException(code, "Unexpected error");
+            case 401:
+                throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
+            case 403:
+                throw new IoTFCReSTException(code,
+                        "The authentication method is invalid or the api key used does not exist");
+            case 404:
+                throw new IoTFCReSTException(code, "The organization does not exist");
+            case 500:
+                throw new IoTFCReSTException(code, "Unexpected error");
             default:
-        throwException(response, METHOD);
+                throwException(response, METHOD);
         }
         return null;
     }
-    
+
     public JsonObject getAllSchemas() throws IoTFCReSTException {
-    	// Call getSchema with null will return all schemas
-    	return getAllSchemas((ArrayList<NameValuePair>) null);
+        // Call getSchema with null will return all schemas
+        return getAllSchemas((ArrayList<NameValuePair>) null);
     }
 
     public JsonObject getSchemaByName(String name) throws IoTFCReSTException {
         ArrayList<NameValuePair> parameters = new ArrayList<NameValuePair>();
         parameters.add(new BasicNameValuePair("name", name));
-    	return getAllSchemas(parameters);
+        return getAllSchemas(parameters);
     }
-    
-	public JsonObject updateSchemaByName(String name, String schemaFileName) throws IoTFCReSTException {
-		JsonObject response = getSchemaByName(name);
-		if (response.get("meta").getAsJsonObject().get("total_rows").getAsInt() == 0) {
-			return null;
-		} else {
-			JsonArray allSchemas = response.get("results").getAsJsonArray();
-			for (int i = 0; i < allSchemas.size(); i++) {
-				if (allSchemas.get(i).getAsJsonObject().get("name").getAsString().equals(name)) {
-					return updateSchema(allSchemas.get(i).getAsJsonObject().get("id").getAsString(), schemaFileName);
-				}
-			}
-		}
-		return null;
-	}
+
+    public JsonObject updateSchemaByName(String name, String schemaFileName) throws IoTFCReSTException {
+        JsonObject response = getSchemaByName(name);
+        if (response.get("meta").getAsJsonObject().get("total_rows").getAsInt() == 0) {
+            return null;
+        } else {
+            JsonArray allSchemas = response.get("results").getAsJsonArray();
+            for (int i = 0; i < allSchemas.size(); i++) {
+                if (allSchemas.get(i).getAsJsonObject().get("name").getAsString().equals(name)) {
+                    return updateSchema(allSchemas.get(i).getAsJsonObject().get("id").getAsString(), schemaFileName);
+                }
+            }
+        }
+        return null;
+    }
 
     public boolean deleteSchemaByName(String name) throws IoTFCReSTException {
-    	JsonObject response = getSchemaByName(name);
-    	if (response.get("meta").getAsJsonObject().get("total_rows").getAsInt() == 0) {
-    		return false;
-    	} else {
+        JsonObject response = getSchemaByName(name);
+        if (response.get("meta").getAsJsonObject().get("total_rows").getAsInt() == 0) {
+            return false;
+        } else {
 
-    		JsonArray allSchemas = response.getAsJsonArray("results");
-    		for (int i = 0; i < allSchemas.size(); i++) {
-    			deleteSchema(allSchemas.get(i).getAsJsonObject().get("id").getAsString());
-    		}
-    		return true;
-    	}
+            JsonArray allSchemas = response.getAsJsonArray("results");
+            for (int i = 0; i < allSchemas.size(); i++) {
+                deleteSchema(allSchemas.get(i).getAsJsonObject().get("id").getAsString());
+            }
+            return true;
+        }
     }
 
     public boolean isSchemaExistByName(String name) throws IoTFCReSTException {
         try {
             JsonObject response = getSchemaByName(name);
-            return (response.get("meta").getAsJsonObject().get("total_rows").getAsInt() > 0);
+            JsonArray schemaList = response.get("results").getAsJsonArray();
+            for (int i = 0; i < schemaList.size(); i++) {
+                if (schemaList.get(i).getAsJsonObject().get("name").getAsString().equals(name)) {
+                    return true;
+                }
+            }
+            return false;
         } catch (Exception e) {
             IoTFCReSTException ex = new IoTFCReSTException("Failure in getting schema name " + "::" + e.getMessage());
             ex.initCause(e);
             throw ex;
         }
     }
-    
-    
+
     /**
      * Adds a Json schema
-     * 
+     *
      * @param schemaName
      * @param schemaFileName
      * @param schemaPath
@@ -4439,215 +4470,213 @@ public class ZmartifyAPIClient {
      * @throws IoTFCReSTException
      */
     public JsonObject addSchema(String schemaName, String schemaFileName, String description)
-    		throws IoTFCReSTException {
+            throws IoTFCReSTException {
 
-    	final String METHOD = "addSchema";
+        final String METHOD = "addSchema";
 
-    	/**
-    	 * Form the url based on this swagger documentation
-    	 */
-    	StringBuilder url = new StringBuilder("https://")
-    			.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/schemas");
+        /**
+         * Form the url based on this swagger documentation
+         */
+        StringBuilder url = new StringBuilder("https://").append(orgId).append('.').append(this.domain)
+                .append(BASIC_API_V0002_URL).append("/schemas");
 
-    	int code = 0;
-    	HttpResponse response = null;
-    	JsonElement jsonResponse = null;
-    	try {
-    		String encodedString = null;
+        int code = 0;
+        HttpResponse response = null;
+        JsonElement jsonResponse = null;
+        try {
+            String encodedString = null;
 
-    		HttpPost post = new HttpPost(url.toString());
+            HttpPost post = new HttpPost(url.toString());
 
-    		post.addHeader("Accept", "application/json");
-    		post.addHeader("Accept-Language","en-US");
+            post.addHeader("Accept", "application/json");
+            post.addHeader("Accept-Language", "en-US");
 
-    		if (!isQuickstart) {
-    			byte[] encoding = Base64.encodeBase64(new String(authKey + ":" + authToken).getBytes());
-    			encodedString = new String(encoding);
-    			post.addHeader("Authorization", "Basic " + encodedString);
-    		}
+            if (!isQuickstart) {
+                byte[] encoding = Base64.encodeBase64(new String(authKey + ":" + authToken).getBytes());
+                encodedString = new String(encoding);
+                post.addHeader("Authorization", "Basic " + encodedString);
+            }
 
-    		MultipartEntityBuilder entity = MultipartEntityBuilder.create()
-    				.setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
-    				.setContentType(ContentType.MULTIPART_FORM_DATA)
-    				.addTextBody("name", schemaName)
-    				.addBinaryBody("schemaFile", new File(schemaFileName),ContentType.APPLICATION_OCTET_STREAM,schemaName + ".json");
+            MultipartEntityBuilder entity = MultipartEntityBuilder.create()
+                    .setMode(HttpMultipartMode.BROWSER_COMPATIBLE).setContentType(ContentType.MULTIPART_FORM_DATA)
+                    .addTextBody("name", schemaName).addBinaryBody("schemaFile", new File(schemaFileName),
+                            ContentType.APPLICATION_OCTET_STREAM, schemaName + ".json");
 
-    		if (description != null) entity.addTextBody("description", description);
+            if (description != null) {
+                entity.addTextBody("description", description);
+            }
 
-    		post.setEntity(entity.build());
+            post.setEntity(entity.build());
 
-    		try {
-    			HttpClient client = HttpClientBuilder.create().useSystemProperties().setSSLContext(sslContext).build();
-    			response = client.execute(post);
-    		} catch (IOException e) {
-    			LoggerUtility.warn(CLASS_NAME, METHOD, "WARNING:" + e.getMessage());
-    			throw e;
-    		}
+            try {
+                HttpClient client = HttpClientBuilder.create().useSystemProperties().setSSLContext(sslContext).build();
+                response = client.execute(post);
+            } catch (IOException e) {
+                LoggerUtility.warn(CLASS_NAME, METHOD, "WARNING:" + e.getMessage());
+                throw e;
+            }
 
-    		code = response.getStatusLine().getStatusCode();
+            code = response.getStatusLine().getStatusCode();
 
-    		if (code == 201 || code == 400 || code == 409) {
-    			// success
-    			String result = this.readContent(response, METHOD);
-    			jsonResponse = new JsonParser().parse(result);
-    			if (code == 201) {
-    				return jsonResponse.getAsJsonObject();
-    			}
-    		}
+            if (code == 201 || code == 400 || code == 409) {
+                // success
+                String result = this.readContent(response, METHOD);
+                jsonResponse = new JsonParser().parse(result);
+                if (code == 201) {
+                    return jsonResponse.getAsJsonObject();
+                }
+            }
 
-    	} catch (Exception e) {
-    		IoTFCReSTException ex = new IoTFCReSTException(
-    				"Failure in adding the schema file " + "::" + e.getMessage());
-    		ex.initCause(e);
-    		throw ex;
-    	}
+        } catch (Exception e) {
+            IoTFCReSTException ex = new IoTFCReSTException(
+                    "Failure in adding the schema file " + "::" + e.getMessage());
+            ex.initCause(e);
+            throw ex;
+        }
 
-    	switch (code) {
-    	case 400:
-    		throw new IoTFCReSTException(400, "Invalid request (No body, invalid JSON, " + "unexpected key, bad value)",
-    				jsonResponse);
-    	case 401:
-    		throw new IoTFCReSTException(401, "The authentication token is empty or invalid");
-    	case 403:
-    		throw new IoTFCReSTException(403,
-    				"The authentication method is invalid or " + "the API key used does not exist");
-    	case 409:
-    		throw new IoTFCReSTException(409, "The schema already exists", jsonResponse);
-    	case 500:
-    		throw new IoTFCReSTException(500, "Unexpected error");
-    	default:
-    		throwException(response, METHOD);
-    	}
-    	return null;
+        switch (code) {
+            case 400:
+                throw new IoTFCReSTException(400,
+                        "Invalid request (No body, invalid JSON, " + "unexpected key, bad value)", jsonResponse);
+            case 401:
+                throw new IoTFCReSTException(401, "The authentication token is empty or invalid");
+            case 403:
+                throw new IoTFCReSTException(403,
+                        "The authentication method is invalid or " + "the API key used does not exist");
+            case 409:
+                throw new IoTFCReSTException(409, "The schema already exists", jsonResponse);
+            case 500:
+                throw new IoTFCReSTException(500, "Unexpected error");
+            default:
+                throwException(response, METHOD);
+        }
+        return null;
     }
 
-    public JsonObject addSchema(String schemaName, String schemaFileName)
-            throws IoTFCReSTException {
+    public JsonObject addSchema(String schemaName, String schemaFileName) throws IoTFCReSTException {
         return addSchema(schemaName, schemaFileName, "");
     }
 
     public boolean deleteSchema(String schemaId) throws IoTFCReSTException {
-    	final String METHOD = "deleteSchema";
-    	/**
-    	 * Form the url based on this swagger documentation
-    	 */
-    	StringBuilder sb = new StringBuilder("https://");
-    	sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/schemas/")
-    	.append(schemaId);
+        final String METHOD = "deleteSchema";
+        /**
+         * Form the url based on this swagger documentation
+         */
+        StringBuilder sb = new StringBuilder("https://");
+        sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/schemas/")
+                .append(schemaId);
 
-    	int code = 0;
-    	HttpResponse response = null;
-    	try {
-    		response = connect("delete", sb.toString(), null, null);
-    		code = response.getStatusLine().getStatusCode();
-    		if (code == 204) {
-    			return true;
-    		}
-    	} catch (Exception e) {
-    		IoTFCReSTException ex = new IoTFCReSTException("Failure in deleting the Schema" + "::" + e.getMessage());
-    		ex.initCause(e);
-    		throw ex;
-    	}
+        int code = 0;
+        HttpResponse response = null;
+        try {
+            response = connect("delete", sb.toString(), null, null);
+            code = response.getStatusLine().getStatusCode();
+            if (code == 204) {
+                return true;
+            }
+        } catch (Exception e) {
+            IoTFCReSTException ex = new IoTFCReSTException("Failure in deleting the Schema" + "::" + e.getMessage());
+            ex.initCause(e);
+            throw ex;
+        }
 
-    	switch (code) {
-    	case 401:
-    		throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
-    	case 403:
-    		throw new IoTFCReSTException(code, "The authentication method is invalid or the API key used does not exist");
-    	case 404:
-    		throw new IoTFCReSTException(code, "A schema definition with the specified id does not exist");
-    	case 409:
-    		throw new IoTFCReSTException(code, "The schema definition with the specified id is currently being referenced by another object");
-    	case 500:
-    		throw new IoTFCReSTException(500, "Unexpected error");
-    	default:
-    		throwException(response, METHOD);
-    	}
-    	return false;
+        switch (code) {
+            case 401:
+                throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
+            case 403:
+                throw new IoTFCReSTException(code,
+                        "The authentication method is invalid or the API key used does not exist");
+            case 404:
+                throw new IoTFCReSTException(code, "A schema definition with the specified id does not exist");
+            case 409:
+                throw new IoTFCReSTException(code,
+                        "The schema definition with the specified id is currently being referenced by another object");
+            case 500:
+                throw new IoTFCReSTException(500, "Unexpected error");
+            default:
+                throwException(response, METHOD);
+        }
+        return false;
     }
 
-    public JsonObject updateSchema(String schemaId, String schemaFileName)
-    		throws IoTFCReSTException {
+    public JsonObject updateSchema(String schemaId, String schemaFileName) throws IoTFCReSTException {
 
-    	final String METHOD = "updateSchema";
+        final String METHOD = "updateSchema";
 
-    	/**
-    	 * Form the url based on this swagger documentation
-    	 */
-    	StringBuilder url = new StringBuilder("https://")
-    			.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/schemas/").append(schemaId).append("/content");
+        /**
+         * Form the url based on this swagger documentation
+         */
+        StringBuilder url = new StringBuilder("https://").append(orgId).append('.').append(this.domain)
+                .append(BASIC_API_V0002_URL).append("/schemas/").append(schemaId).append("/content");
 
-    	int code = 0;
-    	HttpResponse response = null;
-    	JsonElement jsonResponse = null;
-    	try {
-    		String encodedString = null;
+        int code = 0;
+        HttpResponse response = null;
+        JsonElement jsonResponse = null;
+        try {
+            String encodedString = null;
 
-    		HttpPut put = new HttpPut(url.toString());
+            HttpPut put = new HttpPut(url.toString());
 
-    		put.addHeader("Accept", "application/json");
-    		put.addHeader("Accept-Language","en-US");
+            put.addHeader("Accept", "application/json");
+            put.addHeader("Accept-Language", "en-US");
 
-    		if (!isQuickstart) {
-    			byte[] encoding = Base64.encodeBase64(new String(authKey + ":" + authToken).getBytes());
-    			encodedString = new String(encoding);
-    			put.addHeader("Authorization", "Basic " + encodedString);
-    		}
+            if (!isQuickstart) {
+                byte[] encoding = Base64.encodeBase64(new String(authKey + ":" + authToken).getBytes());
+                encodedString = new String(encoding);
+                put.addHeader("Authorization", "Basic " + encodedString);
+            }
 
-    		MultipartEntityBuilder entity = MultipartEntityBuilder.create()
-    				.setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
-    				.setContentType(ContentType.MULTIPART_FORM_DATA)
-    				.addTextBody("schemaId", schemaId)
-    				.addBinaryBody("schemaFile", new File(schemaFileName));
+            MultipartEntityBuilder entity = MultipartEntityBuilder.create()
+                    .setMode(HttpMultipartMode.BROWSER_COMPATIBLE).setContentType(ContentType.MULTIPART_FORM_DATA)
+                    .addTextBody("schemaId", schemaId).addBinaryBody("schemaFile", new File(schemaFileName));
 
-    		put.setEntity(entity.build());
+            put.setEntity(entity.build());
 
-    		try {
-    			HttpClient client = HttpClientBuilder.create().useSystemProperties().setSSLContext(sslContext).build();
-    			response = client.execute(put);
-    		} catch (IOException e) {
-    			LoggerUtility.warn(CLASS_NAME, METHOD, "WARNING:" + e.getMessage());
-    			throw e;
-    		}
+            try {
+                HttpClient client = HttpClientBuilder.create().useSystemProperties().setSSLContext(sslContext).build();
+                response = client.execute(put);
+            } catch (IOException e) {
+                LoggerUtility.warn(CLASS_NAME, METHOD, "WARNING:" + e.getMessage());
+                throw e;
+            }
 
-    		code = response.getStatusLine().getStatusCode();
+            code = response.getStatusLine().getStatusCode();
 
-    		if (code == 204 || code == 400 || code == 409) {
-    			// success
-    			String result = this.readContent(response, METHOD);
-    			jsonResponse = new JsonParser().parse(result);
-    			if (code == 204) {
-    				return jsonResponse.getAsJsonObject();
-    			}
-    		}
+            if (code == 204 || code == 400 || code == 409) {
+                // success
+                String result = this.readContent(response, METHOD);
+                jsonResponse = new JsonParser().parse(result);
+                if (code == 204) {
+                    return jsonResponse.getAsJsonObject();
+                }
+            }
 
-    	} catch (Exception e) {
-    		IoTFCReSTException ex = new IoTFCReSTException(
-    				"Failure in adding the schema file " + "::" + e.getMessage());
-    		ex.initCause(e);
-    		throw ex;
-    	}
+        } catch (Exception e) {
+            IoTFCReSTException ex = new IoTFCReSTException(
+                    "Failure in adding the schema file " + "::" + e.getMessage());
+            ex.initCause(e);
+            throw ex;
+        }
 
-    	switch (code) {
-    	case 400:
-    		throw new IoTFCReSTException(400, "Invalid request (No body, invalid JSON, " + "unexpected key, bad value)",
-    				jsonResponse);
-    	case 401:
-    		throw new IoTFCReSTException(401, "The authentication token is empty or invalid");
-    	case 403:
-    		throw new IoTFCReSTException(403,
-    				"The authentication method is invalid or " + "the API key used does not exist");
-    	case 404:
-    		throw new IoTFCReSTException(409, "A schema with the specified id does not exist", jsonResponse);
-    	case 500:
-    		throw new IoTFCReSTException(500, "Unexpected error");
-    	default:
-    		throwException(response, METHOD);
-    	}
-    	return null;
+        switch (code) {
+            case 400:
+                throw new IoTFCReSTException(400,
+                        "Invalid request (No body, invalid JSON, " + "unexpected key, bad value)", jsonResponse);
+            case 401:
+                throw new IoTFCReSTException(401, "The authentication token is empty or invalid");
+            case 403:
+                throw new IoTFCReSTException(403,
+                        "The authentication method is invalid or " + "the API key used does not exist");
+            case 404:
+                throw new IoTFCReSTException(409, "A schema with the specified id does not exist", jsonResponse);
+            case 500:
+                throw new IoTFCReSTException(500, "Unexpected error");
+            default:
+                throwException(response, METHOD);
+        }
+        return null;
     }
 
-    
     public boolean isEventTypeExist(String eventTypeId) throws IoTFCReSTException {
         final String METHOD = "isEventTypeExist";
         /**
@@ -4814,18 +4843,18 @@ public class ZmartifyAPIClient {
         }
 
         switch (code) {
-        case 401:
-            throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
-        case 403:
-            throw new IoTFCReSTException(code,
-                    "The authentication method is invalid or the API key used does not exist");
-        case 409:
-            throw new IoTFCReSTException(code,
-                    "The event type with the specified id is currently being referenced by another object");
-        case 500:
-            throw new IoTFCReSTException(500, "Unexpected error");
+            case 401:
+                throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
+            case 403:
+                throw new IoTFCReSTException(code,
+                        "The authentication method is invalid or the API key used does not exist");
+            case 409:
+                throw new IoTFCReSTException(code,
+                        "The event type with the specified id is currently being referenced by another object");
+            case 500:
+                throw new IoTFCReSTException(500, "Unexpected error");
             default:
-        throwException(response, METHOD);
+                throwException(response, METHOD);
         }
         return false;
     }
@@ -4898,7 +4927,8 @@ public class ZmartifyAPIClient {
         if (code == 401) {
             throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
         } else if (code == 403) {
-            throw new IoTFCReSTException(code, "The authentication method is invalid or the api key used does not exist");
+            throw new IoTFCReSTException(code,
+                    "The authentication method is invalid or the api key used does not exist");
         } else if (code == 404) {
             throw new IoTFCReSTException(code, "The organization does not exist");
         } else if (code == 500) {
@@ -4909,23 +4939,22 @@ public class ZmartifyAPIClient {
     }
 
     public JsonObject getAllEventTypes() throws IoTFCReSTException {
-    	return getAllEventTypes((ArrayList<NameValuePair>) null);
+        return getAllEventTypes((ArrayList<NameValuePair>) null);
     }
-    
 
     public JsonObject getEventTypeByName(String name) throws IoTFCReSTException {
         ArrayList<NameValuePair> parameters = new ArrayList<NameValuePair>();
         parameters.add(new BasicNameValuePair("name", name));
         return getAllEventTypes(parameters);
     }
-    
+
     public boolean deleteEventTypeByName(String name) throws IoTFCReSTException {
-    	JsonObject response = getEventTypeByName(name);
-    	JsonArray allEventTypes = response.getAsJsonArray("results");
-    	for (int i = 0; i < allEventTypes.size(); i++) {
-    		deleteEventType(allEventTypes.get(i).getAsJsonObject().get("id").getAsString());
-    	}
-    	return true;
+        JsonObject response = getEventTypeByName(name);
+        JsonArray allEventTypes = response.getAsJsonArray("results");
+        for (int i = 0; i < allEventTypes.size(); i++) {
+            deleteEventType(allEventTypes.get(i).getAsJsonObject().get("id").getAsString());
+        }
+        return true;
     }
 
     public boolean isEventTypeExistByName(String name) throws IoTFCReSTException {
@@ -4935,85 +4964,94 @@ public class ZmartifyAPIClient {
          */
         try {
             JsonObject response = getEventTypeByName(name);
-            return (response.get("meta").getAsJsonObject().get("total_rows").getAsInt() > 0);
+            JsonArray eventTypeList = response.get("results").getAsJsonArray();
+            for (int i = 0; i < eventTypeList.size(); i++) {
+                if (eventTypeList.get(i).getAsJsonObject().get("name").getAsString().equals(name)) {
+                    return true;
+                }
+            }
+            return false;
         } catch (Exception e) {
             IoTFCReSTException ex = new IoTFCReSTException("Failure in getting event Type " + "::" + e.getMessage());
             ex.initCause(e);
             throw ex;
         }
     }
-    
-    
+
     public JsonObject updateEventType(String eventTypeId, JsonElement propertiesToBeModified)
-    		throws IoTFCReSTException {
+            throws IoTFCReSTException {
 
-    	final String METHOD = "updateEventType";
-    	/**
-    	 * Form the url based on this swagger documentation
-    	 */
-    	StringBuilder sb = new StringBuilder("https://");
-    	sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/event/types/")
-    	.append(eventTypeId);
+        final String METHOD = "updateEventType";
+        /**
+         * Form the url based on this swagger documentation
+         */
+        StringBuilder sb = new StringBuilder("https://");
+        sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/event/types/")
+                .append(eventTypeId);
 
-    	int code = 0;
-    	JsonElement jsonResponse = null;
-    	HttpResponse response = null;
-    	try {
-    		response = connect("put", sb.toString(), propertiesToBeModified.toString(), null);
-    		code = response.getStatusLine().getStatusCode();
-    		if (code == 200 || code == 409) {
-    			String result = this.readContent(response, METHOD);
-    			jsonResponse = new JsonParser().parse(result);
-    			if (code == 200) {
-    				return jsonResponse.getAsJsonObject();
-    			}
-    		}
-    	} catch (Exception e) {
-    		IoTFCReSTException ex = new IoTFCReSTException(
-    				"Failure in updating the EventType " + "::" + e.getMessage());
-    		ex.initCause(e);
-    		throw ex;
-    	}
+        int code = 0;
+        JsonElement jsonResponse = null;
+        HttpResponse response = null;
+        try {
+            response = connect("put", sb.toString(), propertiesToBeModified.toString(), null);
+            code = response.getStatusLine().getStatusCode();
+            if (code == 200 || code == 409) {
+                String result = this.readContent(response, METHOD);
+                jsonResponse = new JsonParser().parse(result);
+                if (code == 200) {
+                    return jsonResponse.getAsJsonObject();
+                }
+            }
+        } catch (Exception e) {
+            IoTFCReSTException ex = new IoTFCReSTException(
+                    "Failure in updating the EventType " + "::" + e.getMessage());
+            ex.initCause(e);
+            throw ex;
+        }
 
-    	switch (code) {
-    	case 401:
-    		throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
-    	case 403:
-    		throw new IoTFCReSTException(code,
-    				"The authentication method is invalid or the API key used does not exist");
-    	case 404:
-    		throw new IoTFCReSTException(code, "The organization, device type or device does not exist");
-    	case 409:
-    		throw new IoTFCReSTException(code, "The update could not be completed due to a conflict", jsonResponse);
-    	case 500:
-    		throw new IoTFCReSTException(500, "Unexpected error");
-    	default:
-    		throwException(response, METHOD);
-    	}
-    	return null;
+        switch (code) {
+            case 401:
+                throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
+            case 403:
+                throw new IoTFCReSTException(code,
+                        "The authentication method is invalid or the API key used does not exist");
+            case 404:
+                throw new IoTFCReSTException(code, "The organization, device type or device does not exist");
+            case 409:
+                throw new IoTFCReSTException(code, "The update could not be completed due to a conflict", jsonResponse);
+            case 500:
+                throw new IoTFCReSTException(500, "Unexpected error");
+            default:
+                throwException(response, METHOD);
+        }
+        return null;
     }
 
     /*
-     * ********* PHYSCIAL INTERFACES 
-     * 
+     * ********* PHYSCIAL INTERFACES
+     *
      */
-    
+
     /**
      * Physical interfaces are used to model the interfaces between physical devices and the Watson IoT Platform.
-     * A physical interface references event types. Devices that implement a physical interface publish these events to the platform.
-     * 
-     * The event types are referenced via a mapping that maps an event id to the id of an event type. The event id corresponds to the
+     * A physical interface references event types. Devices that implement a physical interface publish these events to
+     * the platform.
+     *
+     * The event types are referenced via a mapping that maps an event id to the id of an event type. The event id
+     * corresponds to the
      * MQTT topic that the event is published to by a device.
-     *  
-     * The physicalinterfaces endpoint returns the list of all of the physical interfaces that have been defined for the organization
-     * in the Watson IoT Platform. Various query parameters can be used to filter, sort and page through the list of physical interfaces
+     * 
+     * The physicalinterfaces endpoint returns the list of all of the physical interfaces that have been defined for the
+     * organization
+     * in the Watson IoT Platform. Various query parameters can be used to filter, sort and page through the list of
+     * physical interfaces
      * that are returned.
-     *   
+     * 
      * @param parameters
      * @return
      * @throws IoTFCReSTException
      */
-    
+
     public JsonObject getAllPhysicalInterfaces(List<NameValuePair> parameters) throws IoTFCReSTException {
         final String METHOD = "getPhysicalInterfaces(1)";
         /**
@@ -5054,22 +5092,22 @@ public class ZmartifyAPIClient {
     }
 
     public JsonObject getAllPhyscialInterfaces() throws IoTFCReSTException {
-    	return getAllPhysicalInterfaces((ArrayList<NameValuePair>) null);
+        return getAllPhysicalInterfaces((ArrayList<NameValuePair>) null);
     }
 
     public JsonObject getPhysicalInterfaceByName(String name) throws IoTFCReSTException {
         ArrayList<NameValuePair> parameters = new ArrayList<NameValuePair>();
         parameters.add(new BasicNameValuePair("name", name));
-    	return getAllPhysicalInterfaces(parameters);
+        return getAllPhysicalInterfaces(parameters);
     }
-    
+
     public boolean deletePhysicalInterfaceByName(String name) throws IoTFCReSTException {
-    	JsonObject response = getPhysicalInterfaceByName(name);
-    	JsonArray allPhysicalInterfaces = response.getAsJsonArray("results");
-    	for (int i = 0; i < allPhysicalInterfaces.size(); i++) {
-    		deletePhysicalInterface(allPhysicalInterfaces.get(i).getAsJsonObject().get("id").getAsString());
-    	}
-    	return true;
+        JsonObject response = getPhysicalInterfaceByName(name);
+        JsonArray allPhysicalInterfaces = response.getAsJsonArray("results");
+        for (int i = 0; i < allPhysicalInterfaces.size(); i++) {
+            deletePhysicalInterface(allPhysicalInterfaces.get(i).getAsJsonObject().get("id").getAsString());
+        }
+        return true;
     }
 
     public boolean isPhysicalInterfaceExistByName(String name) throws IoTFCReSTException {
@@ -5079,14 +5117,20 @@ public class ZmartifyAPIClient {
          */
         try {
             JsonObject response = getPhysicalInterfaceByName(name);
-            return (response.get("meta").getAsJsonObject().get("total_rows").getAsInt() > 0);
+            JsonArray physicalInterfaceList = response.get("results").getAsJsonArray();
+            for (int i = 0; i < physicalInterfaceList.size(); i++) {
+                if (physicalInterfaceList.get(i).getAsJsonObject().get("name").getAsString().equals(name)) {
+                    return true;
+                }
+            }
+            return false;
         } catch (Exception e) {
             IoTFCReSTException ex = new IoTFCReSTException("Failure in getting event Type " + "::" + e.getMessage());
             ex.initCause(e);
             throw ex;
         }
     }
-    
+
     public JsonObject getPhysicalInterface(String physicalInterfaceId) throws IoTFCReSTException {
         final String METHOD = "getPhyscialInterfaces";
         /**
@@ -5094,14 +5138,14 @@ public class ZmartifyAPIClient {
          *
          */
         StringBuilder sb = new StringBuilder("https://");
-        sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL)
-        	.append("/physicalinterfaces/").append(physicalInterfaceId);
-        
+        sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/physicalinterfaces/")
+                .append(physicalInterfaceId);
+
         int code = 0;
         HttpResponse response = null;
         JsonElement jsonResponse = null;
         try {
-            response = connect("get", sb.toString(),null,null);
+            response = connect("get", sb.toString(), null, null);
             code = response.getStatusLine().getStatusCode();
             String result = this.readContent(response, METHOD);
             jsonResponse = new JsonParser().parse(result);
@@ -5116,26 +5160,29 @@ public class ZmartifyAPIClient {
         }
 
         switch (code) {
-        case 304:
-            throw new IoTFCReSTException(code, "The state of the physical interface definition has not been modified", jsonResponse);
-        case 400:
-            throw new IoTFCReSTException(code, "Bad Request", jsonResponse);
-		case 401:
-            throw new IoTFCReSTException(code, "The authentication token is empty or invalid", jsonResponse);
-		case 403:
-            throw new IoTFCReSTException(code, "Then authentication method is invalid or the API key used does not exist", jsonResponse);
-		case 404:
-            throw new IoTFCReSTException(code, "An physcial interface with the specified id does not exist.", jsonResponse);
-		case 500:
-            throw new IoTFCReSTException(code, "Unexpected error", jsonResponse);
-		default:
-			throw new IoTFCReSTException(code, "", jsonResponse); 
+            case 304:
+                throw new IoTFCReSTException(code,
+                        "The state of the physical interface definition has not been modified", jsonResponse);
+            case 400:
+                throw new IoTFCReSTException(code, "Bad Request", jsonResponse);
+            case 401:
+                throw new IoTFCReSTException(code, "The authentication token is empty or invalid", jsonResponse);
+            case 403:
+                throw new IoTFCReSTException(code,
+                        "Then authentication method is invalid or the API key used does not exist", jsonResponse);
+            case 404:
+                throw new IoTFCReSTException(code, "An physcial interface with the specified id does not exist.",
+                        jsonResponse);
+            case 500:
+                throw new IoTFCReSTException(code, "Unexpected error", jsonResponse);
+            default:
+                throw new IoTFCReSTException(code, "", jsonResponse);
         }
     }
 
     /**
      * Creates a new physical interface for the organization in the Watson IoT Platform.
-     * 
+     *
      * @param name
      * @param description
      * @return
@@ -5143,225 +5190,232 @@ public class ZmartifyAPIClient {
      */
     public JsonObject addPhysicalInterface(String name, String description) throws IoTFCReSTException {
 
-    	final String METHOD = "addPhyscialInterface";
-    	/**
-    	 * Form the url based on this swagger documentation
-    	 */
-    	StringBuilder sb = new StringBuilder("https://");
-    	sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/physicalinterfaces");
+        final String METHOD = "addPhyscialInterface";
+        /**
+         * Form the url based on this swagger documentation
+         */
+        StringBuilder sb = new StringBuilder("https://");
+        sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/physicalinterfaces");
 
-    	int code = 0;
-    	HttpResponse response = null;
-    	JsonElement jsonResponse = null;
-    	try {
-    		JsonObject jsonRequest = new JsonObject();
-    		jsonRequest.addProperty("name", name);
-    		jsonRequest.addProperty("description", description);
+        int code = 0;
+        HttpResponse response = null;
+        JsonElement jsonResponse = null;
+        try {
+            JsonObject jsonRequest = new JsonObject();
+            jsonRequest.addProperty("name", name);
+            jsonRequest.addProperty("description", description);
 
-    		response = connect("post", sb.toString(), jsonRequest.toString(), null);
-    		code = response.getStatusLine().getStatusCode();
-    		if (code == 201 || code == 400 || code == 409) {
-    			// success
-    			String result = this.readContent(response, METHOD);
-    			jsonResponse = new JsonParser().parse(result);
-    		}
-    		if (code == 201) {
-    			return jsonResponse.getAsJsonObject();
-    		}
-    	} catch (Exception e) {
-    		IoTFCReSTException ex = new IoTFCReSTException(
-    				"Failure in adding the physical interface " + "::" + e.getMessage());
-    		ex.initCause(e);
-    		throw ex;
-    	}
+            response = connect("post", sb.toString(), jsonRequest.toString(), null);
+            code = response.getStatusLine().getStatusCode();
+            if (code == 201 || code == 400 || code == 409) {
+                // success
+                String result = this.readContent(response, METHOD);
+                jsonResponse = new JsonParser().parse(result);
+            }
+            if (code == 201) {
+                return jsonResponse.getAsJsonObject();
+            }
+        } catch (Exception e) {
+            IoTFCReSTException ex = new IoTFCReSTException(
+                    "Failure in adding the physical interface " + "::" + e.getMessage());
+            ex.initCause(e);
+            throw ex;
+        }
 
-    	switch (code) {
-    	case 400:
-    		throw new IoTFCReSTException(400, "Invalid request (No body, invalid JSON, " + "unexpected key, bad value)",
-    				jsonResponse);
-    	case 401:
-    		throw new IoTFCReSTException(401, "The authentication token is empty or invalid");
-    	case 403:
-    		throw new IoTFCReSTException(403,
-    				"The authentication method is invalid or " + "the API key used does not exist");
-    	case 409:
-    		throw new IoTFCReSTException(409, "The physical interface already exists", jsonResponse);
-    	case 500:
-    		throw new IoTFCReSTException(500, "Unexpected error");
-    	default:
-    		throwException(response, METHOD);
-    		return null;
-    	}
+        switch (code) {
+            case 400:
+                throw new IoTFCReSTException(400,
+                        "Invalid request (No body, invalid JSON, " + "unexpected key, bad value)", jsonResponse);
+            case 401:
+                throw new IoTFCReSTException(401, "The authentication token is empty or invalid");
+            case 403:
+                throw new IoTFCReSTException(403,
+                        "The authentication method is invalid or " + "the API key used does not exist");
+            case 409:
+                throw new IoTFCReSTException(409, "The physical interface already exists", jsonResponse);
+            case 500:
+                throw new IoTFCReSTException(500, "Unexpected error");
+            default:
+                throwException(response, METHOD);
+                return null;
+        }
     }
 
-    public JsonObject addPhyscialInterfaceToDeviceType(String deviceType, String physicalInterfaceId) throws IoTFCReSTException {
-        
-    	final String METHOD = "addPhysicalInterfaceToDeviceType";
-    	/**
-    	 * Form the url based on this swagger documentation
-    	 */
-    	StringBuilder sb = new StringBuilder("https://");
-    	sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL)
-    	 .append("/device/types/").append(deviceType);
+    public JsonObject addPhyscialInterfaceToDeviceType(String deviceType, String physicalInterfaceId)
+            throws IoTFCReSTException {
 
-    	int code = 0;
-    	JsonObject request = new JsonObject();
-    	HttpResponse response = null;
-    	JsonElement jsonResponse = null;
-    	try {
-    		request.addProperty("physicalInterfaceId", physicalInterfaceId);
-    		response = connect("put", sb.toString(), request.toString(), null);
-    		code = response.getStatusLine().getStatusCode();
-    		if (code == 200 || code == 409) {
-    			// success
-    			String result = this.readContent(response, METHOD);
-    			jsonResponse = new JsonParser().parse(result);
-    		}
-    		if (code == 200) {
-    			return jsonResponse.getAsJsonObject();
-    		}
-    	} catch (Exception e) {
-    		IoTFCReSTException ex = new IoTFCReSTException(
-    				"Failure in adding the physical interface to device type " + "::" + e.getMessage());
-    		ex.initCause(e);
-    		throw ex;
-    	}
+        final String METHOD = "addPhysicalInterfaceToDeviceType";
+        /**
+         * Form the url based on this swagger documentation
+         */
+        StringBuilder sb = new StringBuilder("https://");
+        sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/device/types/")
+                .append(deviceType);
 
-    	switch (code) {
-    	case 401:
-    		throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
-    	case 403:
-    		throw new IoTFCReSTException(code,
-    				"The authentication method is invalid or " + "the API key used does not exist");
-    	case 404:
-    		throw new IoTFCReSTException(code, "A device type with the specified id does not exist.");
-    	case 409:
-    		throw new IoTFCReSTException(code, "The update could not be completed due to a conflict",
-    				jsonResponse);
+        int code = 0;
+        JsonObject request = new JsonObject();
+        HttpResponse response = null;
+        JsonElement jsonResponse = null;
+        try {
+            request.addProperty("physicalInterfaceId", physicalInterfaceId);
+            response = connect("put", sb.toString(), request.toString(), null);
+            code = response.getStatusLine().getStatusCode();
+            if (code == 200 || code == 409) {
+                // success
+                String result = this.readContent(response, METHOD);
+                jsonResponse = new JsonParser().parse(result);
+            }
+            if (code == 200) {
+                return jsonResponse.getAsJsonObject();
+            }
+        } catch (Exception e) {
+            IoTFCReSTException ex = new IoTFCReSTException(
+                    "Failure in adding the physical interface to device type " + "::" + e.getMessage());
+            ex.initCause(e);
+            throw ex;
+        }
 
-    	case 500:
-    		throw new IoTFCReSTException(code, "Unexpected error");
-    	default:
-    		throwException(response, METHOD);
-    		return null;
-    	}
+        switch (code) {
+            case 401:
+                throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
+            case 403:
+                throw new IoTFCReSTException(code,
+                        "The authentication method is invalid or " + "the API key used does not exist");
+            case 404:
+                throw new IoTFCReSTException(code, "A device type with the specified id does not exist.");
+            case 409:
+                throw new IoTFCReSTException(code, "The update could not be completed due to a conflict", jsonResponse);
+
+            case 500:
+                throw new IoTFCReSTException(code, "Unexpected error");
+            default:
+                throwException(response, METHOD);
+                return null;
+        }
     }
 
-    public boolean removePhyscialInterfaceFromDeviceType(String deviceType, String physicalInterfaceId) throws IoTFCReSTException {
-    	final String METHOD = "removePhysicalInterfaceFromDeviceType";
-    	/**
-    	 * Form the url based on this swagger documentation
-    	 */
-    	StringBuilder sb = new StringBuilder("https://");
-    	sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL)
-    	.append("/device/types/").append(deviceType)
-    	.append("/physiscalinterfaces/").append(physicalInterfaceId);
+    public boolean removePhyscialInterfaceFromDeviceType(String deviceType, String physicalInterfaceId)
+            throws IoTFCReSTException {
+        final String METHOD = "removePhysicalInterfaceFromDeviceType";
+        /**
+         * Form the url based on this swagger documentation
+         */
+        StringBuilder sb = new StringBuilder("https://");
+        sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/device/types/")
+                .append(deviceType).append("/physiscalinterfaces/").append(physicalInterfaceId);
 
-    	int code = 0;
-    	HttpResponse response = null;
-    	try {
-    		response = connect("delete", sb.toString(), null, null);
-    		code = response.getStatusLine().getStatusCode();
-    		if (code == 204) {
-    			return true;
-    		}
-    	} catch (Exception e) {
-    		IoTFCReSTException ex = new IoTFCReSTException("Failure in removing the physical Interface" + "::" + e.getMessage());
-    		ex.initCause(e);
-    		throw ex;
-    	}
+        int code = 0;
+        HttpResponse response = null;
+        try {
+            response = connect("delete", sb.toString(), null, null);
+            code = response.getStatusLine().getStatusCode();
+            if (code == 204) {
+                return true;
+            }
+        } catch (Exception e) {
+            IoTFCReSTException ex = new IoTFCReSTException(
+                    "Failure in removing the physical Interface" + "::" + e.getMessage());
+            ex.initCause(e);
+            throw ex;
+        }
 
-    	switch (code) {
-    	case 401:
-    		throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
-    	case 403:
-    		throw new IoTFCReSTException(code, "The authentication method is invalid or the API key used does not exist");
-    	case 404:
-    		throw new IoTFCReSTException(code, "A physical interface with the specified id does not exist");
-    	case 409:
-    		throw new IoTFCReSTException(code, "The physical interface with the specified id is currently being referenced by property mappings on the device type");
-    	case 500:
-    		throw new IoTFCReSTException(500, "Unexpected error");
-    	default:
-    		throwException(response, METHOD);
-    	}
-    	return false;
+        switch (code) {
+            case 401:
+                throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
+            case 403:
+                throw new IoTFCReSTException(code,
+                        "The authentication method is invalid or the API key used does not exist");
+            case 404:
+                throw new IoTFCReSTException(code, "A physical interface with the specified id does not exist");
+            case 409:
+                throw new IoTFCReSTException(code,
+                        "The physical interface with the specified id is currently being referenced by property mappings on the device type");
+            case 500:
+                throw new IoTFCReSTException(500, "Unexpected error");
+            default:
+                throwException(response, METHOD);
+        }
+        return false;
     }
 
     /*
      * Maps an event id to a specific event type for the specified physical interface.
-     * 
+     *
      * @param physicalInterfaceId
+     * 
      * @param eventId
+     * 
      * @param eventTypeId
+     * 
      * @return
+     * 
      * @throws IoTFCReSTException
      */
-    public JsonObject attachEventId(String physicalInterfaceId, String eventId, String eventTypeId) throws IoTFCReSTException {
-    
-    	final String METHOD = "attachEventId";
-    	/**
-    	 * Form the url based on this swagger documentation
-    	 */
-    	StringBuilder sb = new StringBuilder("https://");
-    	sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL)
-    	 .append("/physicalinterfaces/").append(physicalInterfaceId).append("/events");
+    public JsonObject attachEventId(String physicalInterfaceId, String eventId, String eventTypeId)
+            throws IoTFCReSTException {
 
-    	int code = 0;
-    	HttpResponse response = null;
-    	JsonElement jsonResponse = null;
-    	JsonObject jsonRequest = new JsonObject();
-    	try {
-    		jsonRequest.addProperty("eventId", eventId);
-    		jsonRequest.addProperty("eventTypeId",  eventTypeId);
-    		
-    		response = connect("post", sb.toString(), jsonRequest.toString(), null);
-    		code = response.getStatusLine().getStatusCode();
-    		if (code == 201 || code == 400) {
-    			// success
-    			String result = this.readContent(response, METHOD);
-    			jsonResponse = new JsonParser().parse(result);
-    		}
-    		if (code == 201) {
-    			return jsonResponse.getAsJsonObject();
-    		}
-    	} catch (Exception e) {
-    		IoTFCReSTException ex = new IoTFCReSTException(
-    				"Failure in mapping the eventId " + "::" + e.getMessage());
-    		ex.initCause(e);
-    		throw ex;
-    	}
+        final String METHOD = "attachEventId";
+        /**
+         * Form the url based on this swagger documentation
+         */
+        StringBuilder sb = new StringBuilder("https://");
+        sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/physicalinterfaces/")
+                .append(physicalInterfaceId).append("/events");
 
-    	switch (code) {
-    	case 400:
-    		throw new IoTFCReSTException(400, "Invalid request (No body, invalid JSON, unexpected key, bad value)",
-    				jsonResponse);
-    	case 401:
-    		throw new IoTFCReSTException(401, "The authentication token is empty or invalid");
-    	case 403:
-    		throw new IoTFCReSTException(403,
-    				"The authentication method is invalid or the API key used does not exist");
-    	case 500:
-    		throw new IoTFCReSTException(500, "Unexpected error");
-    	default:
-    		throwException(response, METHOD);
-    		return null;
-    	}
+        int code = 0;
+        HttpResponse response = null;
+        JsonElement jsonResponse = null;
+        JsonObject jsonRequest = new JsonObject();
+        try {
+            jsonRequest.addProperty("eventId", eventId);
+            jsonRequest.addProperty("eventTypeId", eventTypeId);
+
+            response = connect("post", sb.toString(), jsonRequest.toString(), null);
+            code = response.getStatusLine().getStatusCode();
+            if (code == 201 || code == 400) {
+                // success
+                String result = this.readContent(response, METHOD);
+                jsonResponse = new JsonParser().parse(result);
+            }
+            if (code == 201) {
+                return jsonResponse.getAsJsonObject();
+            }
+        } catch (Exception e) {
+            IoTFCReSTException ex = new IoTFCReSTException("Failure in mapping the eventId " + "::" + e.getMessage());
+            ex.initCause(e);
+            throw ex;
+        }
+
+        switch (code) {
+            case 400:
+                throw new IoTFCReSTException(400, "Invalid request (No body, invalid JSON, unexpected key, bad value)",
+                        jsonResponse);
+            case 401:
+                throw new IoTFCReSTException(401, "The authentication token is empty or invalid");
+            case 403:
+                throw new IoTFCReSTException(403,
+                        "The authentication method is invalid or the API key used does not exist");
+            case 500:
+                throw new IoTFCReSTException(500, "Unexpected error");
+            default:
+                throwException(response, METHOD);
+                return null;
+        }
     }
 
     public boolean isEventIdExist(String physicalInterfaceId, String eventId) throws IoTFCReSTException {
-    	JsonArray eventArray = getEventIds(physicalInterfaceId);
-    	for (int i = 0; i < eventArray.size(); i++) {
-    		if (eventArray.get(i).getAsJsonObject().get("eventId").getAsString().equals(eventId)) {
-    			return true;
-    		}
-    	}
-    	return false;
+        JsonArray eventArray = getEventIds(physicalInterfaceId);
+        for (int i = 0; i < eventArray.size(); i++) {
+            if (eventArray.get(i).getAsJsonObject().get("eventId").getAsString().equals(eventId)) {
+                return true;
+            }
+        }
+        return false;
     }
-    
+
     /**
      * Get the list of event mappings
-     * 
+     *
      * @param physicalInterfaceId
      * @return
      * @throws IoTFCReSTException
@@ -5373,14 +5427,14 @@ public class ZmartifyAPIClient {
          *
          */
         StringBuilder sb = new StringBuilder("https://");
-        sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL)
-        	.append("/physicalinterfaces/").append(physicalInterfaceId).append("/events");
-        
+        sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/physicalinterfaces/")
+                .append(physicalInterfaceId).append("/events");
+
         int code = 0;
         HttpResponse response = null;
         JsonElement jsonResponse = null;
         try {
-            response = connect("get", sb.toString(),null,null);
+            response = connect("get", sb.toString(), null, null);
             code = response.getStatusLine().getStatusCode();
             String result = this.readContent(response, METHOD);
             jsonResponse = new JsonParser().parse(result);
@@ -5395,167 +5449,177 @@ public class ZmartifyAPIClient {
         }
 
         switch (code) {
-        case 400:
-            throw new IoTFCReSTException(code, "Bad Request", jsonResponse);
-		case 401:
-            throw new IoTFCReSTException(code, "The authentication token is empty or invalid", jsonResponse);
-		case 403:
-            throw new IoTFCReSTException(code, "Then authentication method is invalid or the API key used does not exist", jsonResponse);
-		case 404:
-            throw new IoTFCReSTException(code, "An physcial interface with the specified id does not exist.", jsonResponse);
-		case 500:
-            throw new IoTFCReSTException(code, "Unexpected error", jsonResponse);
-		default:
-			throw new IoTFCReSTException(code, "", jsonResponse); 
+            case 400:
+                throw new IoTFCReSTException(code, "Bad Request", jsonResponse);
+            case 401:
+                throw new IoTFCReSTException(code, "The authentication token is empty or invalid", jsonResponse);
+            case 403:
+                throw new IoTFCReSTException(code,
+                        "Then authentication method is invalid or the API key used does not exist", jsonResponse);
+            case 404:
+                throw new IoTFCReSTException(code, "An physcial interface with the specified id does not exist.",
+                        jsonResponse);
+            case 500:
+                throw new IoTFCReSTException(code, "Unexpected error", jsonResponse);
+            default:
+                throw new IoTFCReSTException(code, "", jsonResponse);
         }
     }
 
     /**
      * Removes the event mapping with the specified id from the physical interface
-     * 
+     *
      * @param physicalInterfaceId
      * @param eventId
      * @return
      * @throws IoTFCReSTException
      */
     public boolean removeEventId(String physicalInterfaceId, String eventId) throws IoTFCReSTException {
-    	final String METHOD = "removeEventId";
-    	/**
-    	 * Form the url based on this swagger documentation
-    	 */
-    	StringBuilder sb = new StringBuilder("https://");
-    	sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL)
-    	.append("/physicalinterfaces/").append(physicalInterfaceId)
-    	.append("/events/").append(eventId);
+        final String METHOD = "removeEventId";
+        /**
+         * Form the url based on this swagger documentation
+         */
+        StringBuilder sb = new StringBuilder("https://");
+        sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/physicalinterfaces/")
+                .append(physicalInterfaceId).append("/events/").append(eventId);
 
-    	int code = 0;
-    	HttpResponse response = null;
-    	try {
-    		response = connect("delete", sb.toString(), null, null);
-    		code = response.getStatusLine().getStatusCode();
-    		if (code == 204) {
-    			return true;
-    		}
-    	} catch (Exception e) {
-    		IoTFCReSTException ex = new IoTFCReSTException("Failure in removing the Application Interface" + "::" + e.getMessage());
-    		ex.initCause(e);
-    		throw ex;
-    	}
+        int code = 0;
+        HttpResponse response = null;
+        try {
+            response = connect("delete", sb.toString(), null, null);
+            code = response.getStatusLine().getStatusCode();
+            if (code == 204) {
+                return true;
+            }
+        } catch (Exception e) {
+            IoTFCReSTException ex = new IoTFCReSTException(
+                    "Failure in removing the Application Interface" + "::" + e.getMessage());
+            ex.initCause(e);
+            throw ex;
+        }
 
-    	switch (code) {
-    	case 401:
-    		throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
-    	case 403:
-    		throw new IoTFCReSTException(code, "The authentication method is invalid or the API key used does not exist");
-    	case 404:
-    		throw new IoTFCReSTException(code, "A physical interface with the specified id does not exist");
-    	case 500:
-    		throw new IoTFCReSTException(500, "Unexpected error");
-    	default:
-    		throwException(response, METHOD);
-    	}
-    	return false;
+        switch (code) {
+            case 401:
+                throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
+            case 403:
+                throw new IoTFCReSTException(code,
+                        "The authentication method is invalid or the API key used does not exist");
+            case 404:
+                throw new IoTFCReSTException(code, "A physical interface with the specified id does not exist");
+            case 500:
+                throw new IoTFCReSTException(500, "Unexpected error");
+            default:
+                throwException(response, METHOD);
+        }
+        return false;
     }
 
     public boolean deletePhysicalInterface(String physicalInterfaceId) throws IoTFCReSTException {
-    	final String METHOD = "deletePhysicalInterface";
-    	/**
-    	 * Form the url based on this swagger documentation
-    	 */
-    	StringBuilder sb = new StringBuilder("https://");
-    	sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/physicalinterfaces/")
-    	.append(physicalInterfaceId);
+        final String METHOD = "deletePhysicalInterface";
+        /**
+         * Form the url based on this swagger documentation
+         */
+        StringBuilder sb = new StringBuilder("https://");
+        sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/physicalinterfaces/")
+                .append(physicalInterfaceId);
 
-    	int code = 0;
-    	HttpResponse response = null;
-    	try {
-    		response = connect("delete", sb.toString(), null, null);
-    		code = response.getStatusLine().getStatusCode();
-    		if (code == 204) {
-    			return true;
-    		}
-    	} catch (Exception e) {
-    		IoTFCReSTException ex = new IoTFCReSTException("Failure in deleting the Physcial Interface" + "::" + e.getMessage());
-    		ex.initCause(e);
-    		throw ex;
-    	}
+        int code = 0;
+        HttpResponse response = null;
+        try {
+            response = connect("delete", sb.toString(), null, null);
+            code = response.getStatusLine().getStatusCode();
+            if (code == 204) {
+                return true;
+            }
+        } catch (Exception e) {
+            IoTFCReSTException ex = new IoTFCReSTException(
+                    "Failure in deleting the Physcial Interface" + "::" + e.getMessage());
+            ex.initCause(e);
+            throw ex;
+        }
 
-    	switch (code) {
-    	case 401:
-    		throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
-    	case 403:
-    		throw new IoTFCReSTException(code, "The authentication method is invalid or the API key used does not exist");
-    	case 404:
-    		throw new IoTFCReSTException(code, "A physical interface with the specified id does not exist");
-    	case 409:
-    		throw new IoTFCReSTException(code, "The physical interface with the specified id is currently being referenced by another object");
-    	case 500:
-    		throw new IoTFCReSTException(500, "Unexpected error");
-    	default:
-    		throwException(response, METHOD);
-    	}
-    	return false;
+        switch (code) {
+            case 401:
+                throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
+            case 403:
+                throw new IoTFCReSTException(code,
+                        "The authentication method is invalid or the API key used does not exist");
+            case 404:
+                throw new IoTFCReSTException(code, "A physical interface with the specified id does not exist");
+            case 409:
+                throw new IoTFCReSTException(code,
+                        "The physical interface with the specified id is currently being referenced by another object");
+            case 500:
+                throw new IoTFCReSTException(500, "Unexpected error");
+            default:
+                throwException(response, METHOD);
+        }
+        return false;
     }
 
     /**
      * Updates the physical interface with the specified id. The following properties can be updated:
-     * 
-     * 	name
-     * 	description
-     * 
-     * Note that if the description field is omitted from the body of the update, then any existing description will be removed from the physical interface.
-     * 
+     *
+     * name
+     * description
+     *
+     * Note that if the description field is omitted from the body of the update, then any existing description will be
+     * removed from the physical interface.
+     *
      * @param physicalInterfaceId
      * @param propertiesToBeModified
      * @return
      * @throws IoTFCReSTException
      */
     public JsonObject updatePhyscialInterface(String physicalInterfaceId, JsonElement propertiesToBeModified)
-    		throws IoTFCReSTException {
+            throws IoTFCReSTException {
 
-    	final String METHOD = "updatePhysicalInterface";
-    	/**
-    	 * Form the url based on this swagger documentation
-    	 */
-    	StringBuilder sb = new StringBuilder("https://");
-    	sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/physcialinterfaces/")
-    	.append(physicalInterfaceId);
+        final String METHOD = "updatePhysicalInterface";
+        /**
+         * Form the url based on this swagger documentation
+         */
+        StringBuilder sb = new StringBuilder("https://");
+        sb.append(orgId).append('.').append(this.domain).append(BASIC_API_V0002_URL).append("/physcialinterfaces/")
+                .append(physicalInterfaceId);
 
-    	int code = 0;
-    	JsonElement jsonResponse = null;
-    	HttpResponse response = null;
-    	try {
-    		response = connect("put", sb.toString(), propertiesToBeModified.toString(), null);
-    		code = response.getStatusLine().getStatusCode();
-    		if (code == 200 || code == 409) {
-    			String result = this.readContent(response, METHOD);
-    			jsonResponse = new JsonParser().parse(result);
-    			if (code == 200) {
-    				return jsonResponse.getAsJsonObject();
-    			}
-    		}
-    	} catch (Exception e) {
-    		IoTFCReSTException ex = new IoTFCReSTException("Failure in updating the physical interface " + "::" + e.getMessage());
-    		ex.initCause(e);
-    		throw ex;
-    	}
+        int code = 0;
+        JsonElement jsonResponse = null;
+        HttpResponse response = null;
+        try {
+            response = connect("put", sb.toString(), propertiesToBeModified.toString(), null);
+            code = response.getStatusLine().getStatusCode();
+            if (code == 200 || code == 409) {
+                String result = this.readContent(response, METHOD);
+                jsonResponse = new JsonParser().parse(result);
+                if (code == 200) {
+                    return jsonResponse.getAsJsonObject();
+                }
+            }
+        } catch (Exception e) {
+            IoTFCReSTException ex = new IoTFCReSTException(
+                    "Failure in updating the physical interface " + "::" + e.getMessage());
+            ex.initCause(e);
+            throw ex;
+        }
 
-    	switch (code) {
-    	case 401:
-    		throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
-    	case 403:
-    		throw new IoTFCReSTException(code,
-    				"The authentication method is invalid or the API key used does not exist");
-    	case 404:
-    		throw new IoTFCReSTException(code, "A physical interface with the specified id does not exist");
-    	case 412:
-    		throw new IoTFCReSTException(code, "The state of the physical interface has been modified since the client retrieved its representation", jsonResponse);
-    	case 500:
-    		throw new IoTFCReSTException(500, "Unexpected error");
-    	default:
-    		throwException(response, METHOD); }
+        switch (code) {
+            case 401:
+                throw new IoTFCReSTException(code, "The authentication token is empty or invalid");
+            case 403:
+                throw new IoTFCReSTException(code,
+                        "The authentication method is invalid or the API key used does not exist");
+            case 404:
+                throw new IoTFCReSTException(code, "A physical interface with the specified id does not exist");
+            case 412:
+                throw new IoTFCReSTException(code,
+                        "The state of the physical interface has been modified since the client retrieved its representation",
+                        jsonResponse);
+            case 500:
+                throw new IoTFCReSTException(500, "Unexpected error");
+            default:
+                throwException(response, METHOD);
+        }
 
-    	return null;
+        return null;
     }
 }
-
